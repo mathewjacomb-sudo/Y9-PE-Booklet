@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year 9 PE Digital Workbook | NZ Curriculum</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800&display=swap');
+        
+        :root {
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --accent: #4f46e5;
+        }
+
+        body { 
+            font-family: 'Plus+Jakarta+Sans', sans-serif; 
+            background-color: var(--bg-main); 
+            color: #0f172a; 
+            scroll-behavior: smooth; 
+        }
+
+        .athlete-card {
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+        }
+        .athlete-card.selected {
+            border-color: var(--accent);
+            background: white;
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.15);
+        }
+
+        .step-panel { display: none; }
+        .step-panel.active { display: block; animation: slideUp 0.4s ease-out; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .nudge-box {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease-in-out;
+            opacity: 0;
+        }
+        .nudge-box.open { max-height: 200px; padding: 1rem; opacity: 1; margin-top: 1rem; }
+
+        .traffic-light {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 2px solid rgba(0,0,0,0.1);
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            height: 350px;
+        }
+
+        .norm-badge {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; }
+            .step-panel { display: block !important; page-break-after: always; padding: 40px; border-bottom: 2px solid #eee; }
+            textarea, input { border: 1px solid #ddd !important; background: transparent !important; }
+            .athlete-card:not(.selected) { display: none; }
+            .athlete-card.selected { transform: none; border: none; box-shadow: none; }
+        }
+    </style>
+</head>
+<body class="pb-24">
+
+    <!-- Header & Progress -->
+    <header class="no-print bg-white/90 backdrop-blur-xl border-b sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-xl font-extrabold shadow-lg shadow-indigo-200">9</div>
+                <h1 class="text-lg font-extrabold tracking-tight">Fitness <span class="text-indigo-600">& Nutrition</span></h1>
+            </div>
+            
+            <div class="flex items-center gap-8">
+                <div class="flex flex-col items-end">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Mastery XP</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-amber-500">🏆</span>
+                        <span id="xp-total" class="text-2xl font-black text-slate-800 tracking-tighter">0</span>
+                    </div>
+                </div>
+                <button onclick="window.print()" class="bg-slate-900 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-indigo-600 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-slate-200">Print Booklet</button>
+            </div>
+        </div>
+        <div class="h-1.5 bg-slate-100">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-indigo-400 transition-all duration-700" style="width: 0%"></div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 mt-12">
+
+        <!-- STEP 1: IDENTITY -->
+        <section id="step-1" class="step-panel active">
+            <div class="mb-12">
+                <h2 class="text-4xl font-black tracking-tight mb-2">Build Your <span class="text-indigo-600">Identity</span></h2>
+                <p class="text-slate-500 font-medium">Select an iconic Kiwi athlete to mentor your fitness journey this term.</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10" id="athlete-grid"></div>
+
+            <div class="bg-white p-10 rounded-[2.5rem] border shadow-sm grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8">
+                    <h3 class="text-2xl font-extrabold flex items-center gap-3">
+                        <span class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-sm">1</span>
+                        Student Profile
+                    </h3>
+                    <div class="grid gap-6">
+                        <div class="group">
+                            <label class="text-[11px] font-bold uppercase text-slate-400 tracking-widest mb-2 block">Full Name</label>
+                            <input type="text" id="student-name" oninput="saveData()" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-indigo-500 focus:bg-white outline-none transition-all font-medium">
+                        </div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="text-[11px] font-bold uppercase text-slate-400 tracking-widest mb-2 block">Class</label>
+                                <input type="text" id="student-class" oninput="saveData()" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-indigo-500 focus:bg-white outline-none transition-all font-medium">
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-bold uppercase text-slate-400 tracking-widest mb-2 block">Gender (for Norms)</label>
+                                <select id="student-gender" onchange="renderTracker(); saveData()" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-indigo-500 focus:bg-white outline-none transition-all font-bold">
+                                    <option value="male">Male</option>
+                                    <option value="female" selected>Female</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-900 rounded-[2rem] p-12 text-white text-center flex flex-col items-center justify-center min-h-[350px] relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-b from-indigo-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div id="avatar-preview" class="text-8xl mb-6 drop-shadow-2xl">👤</div>
+                    <div id="avatar-name" class="text-2xl font-black tracking-tight">Select Mentor</div>
+                    <div id="avatar-trait" class="text-sm text-indigo-400 font-bold uppercase tracking-widest mt-3">Awaiting Selection...</div>
+                    <div id="avatar-sport" class="text-xs text-slate-500 mt-2 italic"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 2: TRACKER -->
+        <section id="step-2" class="step-panel space-y-10">
+            <div class="bg-indigo-600 text-white p-12 rounded-[3rem] shadow-2xl shadow-indigo-200 relative overflow-hidden">
+                <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+                    <div class="max-w-lg">
+                        <h2 class="text-4xl font-black leading-tight">Fitness Benchmarking</h2>
+                        <p class="text-indigo-100 mt-4 font-medium opacity-90">Choose your tests, enter your scores, and compare against NZ Norms (Average for 12-13 year olds).</p>
+                    </div>
+                    <div class="flex gap-10">
+                        <div class="text-center">
+                            <span class="text-[10px] font-bold uppercase text-indigo-300 tracking-widest">Improved</span>
+                            <div id="stat-up" class="text-5xl font-black text-emerald-400">0</div>
+                        </div>
+                        <div class="text-center border-l border-white/20 pl-10">
+                            <span class="text-[10px] font-bold uppercase text-indigo-300 tracking-widest">Above Norm</span>
+                            <div id="stat-norm" class="text-5xl font-black text-white">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white border rounded-[2rem] overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left min-w-[900px]">
+                        <thead class="bg-slate-50 border-b border-slate-100">
+                            <tr>
+                                <th class="px-8 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Component</th>
+                                <th class="px-8 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Test Selection</th>
+                                <th class="px-8 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Norms (Male vs Female)</th>
+                                <th class="px-8 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Score 1</th>
+                                <th class="px-8 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Score 2</th>
+                                <th class="px-8 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tracker-body" class="divide-y divide-slate-50"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 items-stretch">
+                <div class="bg-white p-10 rounded-[2.5rem] border shadow-sm">
+                    <h4 class="font-black text-xl mb-6">Progress Visualization</h4>
+                    <div class="chart-container">
+                        <canvas id="fitnessChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-indigo-50/50 p-10 rounded-[2.5rem] border border-indigo-100 flex flex-col justify-center">
+                    <h4 class="font-black text-xl mb-4">The "Why" Behind the Numbers</h4>
+                    <p class="text-sm text-slate-600 mb-6 leading-relaxed">Consider your training frequency, growth, motivation levels, or recent health when reflecting on your score changes.</p>
+                    <textarea id="trend-analysis" oninput="saveData()" class="flex-grow min-h-[200px] w-full bg-white border-none rounded-[1.5rem] p-6 shadow-inner text-slate-700 outline-none focus:ring-2 ring-indigo-500" placeholder="Analyze your scores here... e.g. I improved my sprint because I've been doing explosive plyometric drills on Tuesdays."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 3 & 4: KNOWLEDGE (HEALTH & SKILL) -->
+        <section id="step-3" class="step-panel space-y-12">
+            <div>
+                <h2 class="text-3xl font-black">Health-Related Components</h2>
+                <p class="text-slate-500">Define these concepts to earn Mastery Points. Missing a concept? Check the Teacher Nudge.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8" id="health-grid"></div>
+        </section>
+
+        <section id="step-4" class="step-panel space-y-12">
+            <div>
+                <h2 class="text-3xl font-black">Skill-Related Components</h2>
+                <p class="text-slate-500">How do these skills affect your specific sports performance?</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8" id="skill-grid"></div>
+        </section>
+
+        <!-- STEP 5: PLAN -->
+        <section id="step-5" class="step-panel space-y-10">
+            <div class="max-w-3xl">
+                <h2 class="text-4xl font-black tracking-tight">Personal Training Plan</h2>
+                <p class="text-slate-500 mt-4 text-lg">Design a 3-lesson block targeting a specific area of physical fitness.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-[2rem] border shadow-sm space-y-6 flex flex-col">
+                    <div class="w-14 h-14 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-2xl text-2xl shadow-sm">🎯</div>
+                    <div>
+                        <h3 class="font-black text-lg">SMART Goal</h3>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Specific & Measurable</p>
+                    </div>
+                    <textarea id="plan-goal" oninput="saveData()" class="w-full flex-grow h-32 bg-slate-50 rounded-2xl p-4 text-sm font-medium border-transparent border-2 focus:border-indigo-500 outline-none" placeholder="e.g. To improve my 12-min run distance by 100m by focusing on pace."></textarea>
+                </div>
+                <div class="bg-white p-8 rounded-[2rem] border shadow-sm space-y-6 flex flex-col">
+                    <div class="w-14 h-14 bg-emerald-100 text-emerald-600 flex items-center justify-center rounded-2xl text-2xl shadow-sm">⚙️</div>
+                    <div>
+                        <h3 class="font-black text-lg">Method (MOT)</h3>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Continuous, Interval, etc.</p>
+                    </div>
+                    <textarea id="plan-mot" oninput="saveData()" class="w-full flex-grow h-32 bg-slate-50 rounded-2xl p-4 text-sm font-medium border-transparent border-2 focus:border-emerald-500 outline-none" placeholder="Explain the training method you are using..."></textarea>
+                </div>
+                <div class="bg-white p-8 rounded-[2rem] border shadow-sm space-y-6 flex flex-col">
+                    <div class="w-14 h-14 bg-amber-100 text-amber-600 flex items-center justify-center rounded-2xl text-2xl shadow-sm">⚖️</div>
+                    <div>
+                        <h3 class="font-black text-lg">Principle (POT)</h3>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Overload, Specificity, etc.</p>
+                    </div>
+                    <textarea id="plan-pot" oninput="saveData()" class="w-full flex-grow h-32 bg-slate-50 rounded-2xl p-4 text-sm font-medium border-transparent border-2 focus:border-amber-500 outline-none" placeholder="How are you applying a principle like progression?"></textarea>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 text-white p-12 rounded-[3rem] shadow-xl">
+                <h3 class="text-2xl font-black text-center mb-10">3-Lesson Action Plan Matrix</h3>
+                <div class="grid md:grid-cols-3 gap-10">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] font-black bg-indigo-600 px-3 py-1 rounded-full uppercase">Week 1</span>
+                        </div>
+                        <textarea id="lp1" oninput="saveData()" class="w-full h-40 bg-white/5 border-2 border-white/10 rounded-2xl p-5 text-sm outline-none focus:border-indigo-400 transition-colors" placeholder="Exercises, reps, sets, timing..."></textarea>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] font-black bg-indigo-600 px-3 py-1 rounded-full uppercase">Week 2</span>
+                        </div>
+                        <textarea id="lp2" oninput="saveData()" class="w-full h-40 bg-white/5 border-2 border-white/10 rounded-2xl p-5 text-sm outline-none focus:border-indigo-400 transition-colors" placeholder="How do you make it harder (Overload)?"></textarea>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] font-black bg-indigo-600 px-3 py-1 rounded-full uppercase">Week 3</span>
+                        </div>
+                        <textarea id="lp3" oninput="saveData()" class="w-full h-40 bg-white/5 border-2 border-white/10 rounded-2xl p-5 text-sm outline-none focus:border-indigo-400 transition-colors" placeholder="Final intensity push..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 6: REVIEW -->
+        <section id="step-6" class="step-panel space-y-12">
+            <h2 class="text-4xl font-black tracking-tight">Final Term Reflection</h2>
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="bg-white p-10 rounded-[2.5rem] border space-y-6">
+                    <h4 class="font-black text-xl flex items-center gap-3 text-emerald-600">
+                        <span>✨</span> High Points
+                    </h4>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">What went well and why?</p>
+                    <textarea id="rev-win" oninput="saveData()" class="w-full h-40 bg-slate-50 border-transparent border-2 focus:border-emerald-500 rounded-2xl p-6 outline-none transition-all"></textarea>
+                </div>
+                <div class="bg-white p-10 rounded-[2.5rem] border space-y-6">
+                    <h4 class="font-black text-xl flex items-center gap-3 text-rose-500">
+                        <span>⚡</span> Growing Pains
+                    </h4>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">What challenged you?</p>
+                    <textarea id="rev-fail" oninput="saveData()" class="w-full h-40 bg-slate-50 border-transparent border-2 focus:border-rose-500 rounded-2xl p-6 outline-none transition-all"></textarea>
+                </div>
+                <div class="md:col-span-2 bg-gradient-to-br from-indigo-900 to-slate-900 text-white p-12 rounded-[3rem] shadow-2xl relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h4 class="text-3xl font-black mb-4 tracking-tight">Hauora: Beyond the Classroom</h4>
+                        <p class="text-indigo-200 mb-8 max-w-2xl font-medium">Physical health doesn't stop at the PE shed. Describe your clubs, casual play, and movement habits outside of school hours.</p>
+                        <textarea id="extra-curr" oninput="saveData()" class="w-full h-48 bg-white/10 border-2 border-white/10 rounded-[2rem] p-8 outline-none focus:border-indigo-400 transition-all text-lg font-medium" placeholder="On weekends I play for the local netball club and usually walk 5km with family..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Navigation Footer -->
+    <footer class="no-print fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t py-4 z-50">
+        <div class="max-w-3xl mx-auto flex justify-between px-6">
+            <button onclick="nav(1)" id="nb-1" class="flex flex-col items-center gap-1 group px-4 py-2 rounded-xl transition-all">
+                <span class="text-lg">👤</span>
+                <span class="text-[9px] font-black uppercase tracking-tighter group-hover:text-indigo-600">Profile</span>
+            </button>
+            <button onclick="nav(2)" id="nb-2" class="flex flex-col items-center gap-1 group px-4 py-2 rounded-xl transition-all">
+                <span class="text-lg">📊</span>
+                <span class="text-[9px] font-black uppercase tracking-tighter group-hover:text-indigo-600">Tracker</span>
+            </button>
+            <button onclick="nav(3)" id="nb-3" class="flex flex-col items-center gap-1 group px-4 py-2 rounded-xl transition-all">
+                <span class="text-lg">🫀</span>
+                <span class="text-[9px] font-black uppercase tracking-tighter group-hover:text-indigo-600">Health</span>
+            </button>
+            <button onclick="nav(4)" id="nb-4" class="flex flex-col items-center gap-1 group px-4 py-2 rounded-xl transition-all">
+                <span class="text-lg">⚡</span>
+                <span class="text-[9px] font-black uppercase tracking-tighter group-hover:text-indigo-600">Skill</span>
+            </button>
+            <button onclick="nav(5)" id="nb-5" class="flex flex-col items-center gap-1 group px-4 py-2 rounded-xl transition-all">
+                <span class="text-lg">🏗️</span>
+                <span class="text-[9px] font-black uppercase tracking-tighter group-hover:text-indigo-600">Plan</span>
+            </button>
+            <button onclick="nav(6)" id="nb-6" class="flex flex-col items-center gap-1 group px-4 py-2 rounded-xl transition-all">
+                <span class="text-lg">📝</span>
+                <span class="text-[9px] font-black uppercase tracking-tighter group-hover:text-indigo-600">Review</span>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        const ATHLETES = [
+            { id: 'savea', name: 'Ardie Savea', trait: 'Strength & Power', sport: 'Rugby', emoji: '🏉', color: 'from-slate-900 to-indigo-900' },
+            { id: 'adams_v', name: 'Valerie Adams', trait: 'Explosive Power', sport: 'Athletics', emoji: '☄️', color: 'from-indigo-600 to-blue-800' },
+            { id: 'carrington', name: 'Lisa Carrington', trait: 'Endurance & Speed', sport: 'Kayaking', emoji: '🛶', color: 'from-sky-500 to-indigo-600' },
+            { id: 'adams_s', name: 'Steven Adams', trait: 'Strength & Agility', sport: 'Basketball', emoji: '🏀', color: 'from-orange-500 to-red-700' },
+            { id: 'nweke', name: 'Grace Nweke', trait: 'Power & Reach', sport: 'Netball', emoji: '🏐', color: 'from-pink-600 to-indigo-900' },
+            { id: 'williamson', name: 'Kane Williamson', trait: 'Coordination', sport: 'Cricket', emoji: '🏏', color: 'from-emerald-500 to-slate-800' }
+        ];
+
+        const TEST_DATA = {
+            cvf: {
+                name: 'CV Fitness', icon: '🫀', color: 'from-blue-500 to-indigo-600',
+                keys: ['heart', 'lung', 'oxygen', 'aerobic', 'duration', 'long'], 
+                hint: 'Think about how your heart and lungs work together to deliver oxygen over a long duration.',
+                tests: [
+                    { id: 't1_1', name: '12 Min Run', unit: 'm', type: 'high', norms: { male: 2200, female: 2000 } },
+                    { id: 't1_2', name: 'Beep Test', unit: 'lvl', type: 'high', norms: { male: 8.5, female: 7.2 } },
+                    { id: 't1_3', name: '2.4km Run', unit: 'min', type: 'low', norms: { male: 11.5, female: 13.5 } }
+                ]
+            },
+            mstr: {
+                name: 'Muscular Strength', icon: '💪', color: 'from-indigo-500 to-purple-600',
+                keys: ['force', 'heavy', 'maximum', 'once', 'push', 'pull'], 
+                hint: 'This is the absolute maximum force a muscle can generate in one single effort.',
+                tests: [
+                    { id: 't2_1', name: 'Grip Test', unit: 'kg', type: 'high', norms: { male: 30, female: 24 } },
+                    { id: 't2_2', name: 'Push Up Max', unit: 'reps', type: 'high', norms: { male: 25, female: 18 } },
+                    { id: 't2_3', name: '1 Rep Max', unit: 'kg', type: 'high', norms: { male: 50, female: 35 } }
+                ]
+            },
+            mend: {
+                name: 'Muscular Endurance', icon: '🔋', color: 'from-emerald-500 to-teal-600',
+                keys: ['repeated', 'fatigue', 'time', 'many', 'again'], 
+                hint: 'Can your muscles keep working repeatedly over a long time without getting tired?',
+                tests: [
+                    { id: 't3_1', name: 'Sit Up Max', unit: 'reps', type: 'high', norms: { male: 35, female: 30 } },
+                    { id: 't3_2', name: 'Plank Hold', unit: 'sec', type: 'high', norms: { male: 90, female: 90 } },
+                    { id: 't3_3', name: 'Wall Sit', unit: 'sec', type: 'high', norms: { male: 120, female: 110 } }
+                ]
+            },
+            flex: {
+                name: 'Flexibility', icon: '🧘', color: 'from-amber-400 to-orange-500',
+                keys: ['range', 'motion', 'joint', 'stretch'], 
+                hint: 'The range of movement around a specific joint or set of joints.',
+                tests: [
+                    { id: 't4_1', name: 'Sit & Reach', unit: 'cm', type: 'high', norms: { male: 4, female: 8 } },
+                    { id: 't4_2', name: 'Shoulder Flex', unit: 'cm', type: 'low', norms: { male: 5, female: 3 } },
+                    { id: 't4_3', name: 'Trunk Rotat', unit: 'cm', type: 'high', norms: { male: 15, female: 15 } }
+                ]
+            },
+            agi: {
+                name: 'Agility', icon: '⚡', color: 'from-cyan-400 to-blue-500',
+                keys: ['direction', 'quickly', 'control', 'change'], 
+                hint: 'Ability to change body direction rapidly while remaining in control.',
+                tests: [
+                    { id: 't5_1', name: 'Illinois', unit: 'sec', type: 'low', norms: { male: 18.2, female: 20.1 } },
+                    { id: 't5_2', name: 'T-Test', unit: 'sec', type: 'low', norms: { male: 10.5, female: 11.8 } },
+                    { id: 't5_3', name: 'Shuttle 10m', unit: 'sec', type: 'low', norms: { male: 10.8, female: 11.5 } }
+                ]
+            },
+            bal: {
+                name: 'Balance', icon: '🤸', color: 'from-purple-500 to-fuchsia-600',
+                keys: ['stable', 'gravity', 'upright', 'still'], 
+                hint: 'Maintaining stability while stationary or moving your center of gravity.',
+                tests: [
+                    { id: 't6_1', name: 'Stork Stand', unit: 'sec', type: 'high', norms: { male: 15, female: 15 } },
+                    { id: 't6_2', name: 'Beam Walk', unit: 'err', type: 'low', norms: { male: 2, female: 2 } },
+                    { id: 't6_3', name: 'Wobble Board', unit: 'sec', type: 'high', norms: { male: 30, female: 30 } }
+                ]
+            },
+            pow: {
+                name: 'Power', icon: '💥', color: 'from-rose-500 to-red-600',
+                keys: ['strength', 'speed', 'explosive', 'burst', 'fast'], 
+                hint: 'A combination of strength and speed in one quick, explosive movement.',
+                tests: [
+                    { id: 't7_1', name: 'Broad Jump', unit: 'm', type: 'high', norms: { male: 1.8, female: 1.6 } },
+                    { id: 't7_2', name: 'Vertical Jmp', unit: 'cm', type: 'high', norms: { male: 40, female: 35 } },
+                    { id: 't7_3', name: 'Med Ball Toss', unit: 'm', type: 'high', norms: { male: 6.5, female: 5.2 } }
+                ]
+            },
+            spd: {
+                name: 'Speed', icon: '🚀', color: 'from-orange-500 to-rose-600',
+                keys: ['distance', 'time', 'fast', 'short', 'sprint'], 
+                hint: 'Covering a distance as fast as possible in a short period of time.',
+                tests: [
+                    { id: 't8_1', name: '30m Sprint', unit: 'sec', type: 'low', norms: { male: 5.2, female: 5.6 } },
+                    { id: 't8_2', name: '20m Sprint', unit: 'sec', type: 'low', norms: { male: 3.8, female: 4.1 } },
+                    { id: 't8_3', name: 'Flying 10m', unit: 'sec', type: 'low', norms: { male: 1.4, female: 1.6 } }
+                ]
+            },
+            rea: {
+                name: 'Reaction Time', icon: '⏱️', color: 'from-yellow-400 to-amber-500',
+                keys: ['respond', 'signal', 'stimulus', 'quick'], 
+                hint: 'The time it takes your brain to respond to a visual or sound signal.',
+                tests: [
+                    { id: 't9_1', name: 'Ruler Drop', unit: 'cm', type: 'low', norms: { male: 18, female: 18 } },
+                    { id: 't9_2', name: 'Online Click', unit: 'ms', type: 'low', norms: { male: 280, female: 280 } },
+                    { id: 't9_3', name: 'Ball Drop', unit: 'cnt', type: 'high', norms: { male: 8, female: 8 } }
+                ]
+            },
+            coo: {
+                name: 'Coordination', icon: '🎾', color: 'from-teal-400 to-emerald-500',
+                keys: ['senses', 'together', 'parts', 'smoothly'], 
+                hint: 'Using different body parts and senses together in a smooth, efficient movement.',
+                tests: [
+                    { id: 't10_1', name: 'Wall Toss', unit: 'reps', type: 'high', norms: { male: 15, female: 15 } },
+                    { id: 't10_2', name: 'Juggling', unit: 'sec', type: 'high', norms: { male: 10, female: 10 } },
+                    { id: 't10_3', name: 'Hand Tap', unit: 'reps', type: 'high', norms: { male: 35, female: 35 } }
+                ]
+            }
+        };
+
+        let state = { xp: 0, athlete: null, gender: 'female', inputs: {}, completions: {} };
+        let fitnessChart = null;
+
+        function init() {
+            renderAthletes();
+            renderTracker();
+            renderKnowledge();
+            loadData();
+            initChart();
+            nav(1);
+        }
+
+        function renderAthletes() {
+            const grid = document.getElementById('athlete-grid');
+            grid.innerHTML = ATHLETES.map(a => `
+                <div onclick="selectAthlete('${a.id}')" id="ath-${a.id}" class="athlete-card bg-white p-5 rounded-3xl text-center border shadow-sm">
+                    <div class="w-16 h-16 rounded-2xl mx-auto bg-gradient-to-br ${a.color} flex items-center justify-center text-white text-2xl mb-4 shadow-lg shadow-slate-100">${a.emoji}</div>
+                    <div class="text-[10px] font-black leading-tight uppercase text-slate-800 tracking-tight">${a.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectAthlete(id) {
+            state.athlete = id;
+            document.querySelectorAll('.athlete-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(`ath-${id}`).classList.add('selected');
+            const a = ATHLETES.find(x => x.id === id);
+            document.getElementById('avatar-preview').innerText = a.emoji;
+            document.getElementById('avatar-name').innerText = a.name;
+            document.getElementById('avatar-trait').innerText = a.trait;
+            document.getElementById('avatar-sport').innerText = a.sport;
+            saveData();
+        }
+
+        function renderTracker() {
+            const body = document.getElementById('tracker-body');
+            body.innerHTML = Object.entries(TEST_DATA).map(([key, data]) => {
+                const options = data.tests.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+                return `
+                    <tr class="group hover:bg-slate-50 transition-colors">
+                        <td class="px-8 py-6">
+                            <span class="block font-black text-slate-800">${data.name}</span>
+                            <span class="text-[9px] text-indigo-500 font-bold uppercase tracking-wider">${data.icon} Area</span>
+                        </td>
+                        <td class="px-8 py-6">
+                            <select id="sel-${key}" onchange="updateNorms('${key}'); saveData()" class="bg-slate-100 border-none rounded-xl p-3 text-xs font-black w-full outline-none focus:ring-2 ring-indigo-500">${options}</select>
+                        </td>
+                        <td class="px-8 py-6 text-center">
+                            <div class="flex flex-col items-center justify-center gap-1.5" id="norm-container-${key}"></div>
+                        </td>
+                        <td class="px-8 py-6">
+                            <input type="number" id="s1-${key}" oninput="calcTrend('${key}'); saveData()" class="w-20 bg-slate-50 border-2 border-transparent focus:border-indigo-500 focus:bg-white rounded-xl p-3 text-center text-sm font-black transition-all mx-auto block outline-none">
+                        </td>
+                        <td class="px-8 py-6">
+                            <input type="number" id="s2-${key}" oninput="calcTrend('${key}'); saveData()" class="w-20 bg-slate-50 border-2 border-transparent focus:border-indigo-500 focus:bg-white rounded-xl p-3 text-center text-sm font-black transition-all mx-auto block outline-none">
+                        </td>
+                        <td class="px-8 py-6 text-center">
+                            <div id="tl-${key}" class="traffic-light bg-slate-200"></div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            Object.keys(TEST_DATA).forEach(k => updateNorms(k));
+        }
+
+        function updateNorms(key) {
+            const testId = document.getElementById(`sel-${key}`).value;
+            const test = TEST_DATA[key].tests.find(t => t.id === testId);
+            const container = document.getElementById(`norm-container-${key}`);
+            container.innerHTML = `
+                <span class="norm-badge bg-indigo-100 text-indigo-700">M: ${test.norms.male}${test.unit}</span>
+                <span class="norm-badge bg-pink-100 text-pink-700">F: ${test.norms.female}${test.unit}</span>
+            `;
+            calcTrend(key);
+        }
+
+        function renderKnowledge() {
+            const hGrid = document.getElementById('health-grid');
+            const sGrid = document.getElementById('skill-grid');
+            
+            const renderCard = (key, data) => `
+                <div class="bg-white p-8 rounded-[2rem] border shadow-sm flex flex-col h-full group hover:shadow-xl hover:shadow-indigo-100 transition-all">
+                    <div class="h-32 w-full bg-gradient-to-br ${data.color} rounded-2xl flex items-center justify-center text-5xl mb-8 shadow-lg shadow-slate-100">${data.icon}</div>
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="font-black text-xl tracking-tight">${data.name}</h4>
+                        <div id="status-${key}" class="text-xl">⚪</div>
+                    </div>
+                    <textarea id="def-${key}" oninput="saveData()" class="flex-grow bg-slate-50 rounded-2xl p-6 text-sm font-medium h-32 mb-4 outline-none border-2 border-transparent focus:border-indigo-500 focus:bg-white transition-all" placeholder="Explain the concept..."></textarea>
+                    <div id="nudge-${key}" class="nudge-box bg-amber-50 text-xs text-amber-800 rounded-xl font-medium border border-amber-100">
+                        <span class="font-black block mb-1 text-amber-900 uppercase tracking-tighter">Teacher Nudge:</span> ${data.hint}
+                    </div>
+                    <button onclick="checkKnowledge('${key}')" class="w-full bg-slate-900 text-white text-[10px] font-black uppercase py-4 rounded-xl mt-4 hover:bg-indigo-600 transition-all hover:scale-[1.02] active:scale-95">Check Concept</button>
+                </div>
+            `;
+
+            hGrid.innerHTML = Object.entries(TEST_DATA).slice(0, 4).map(([k, v]) => renderCard(k, v)).join('');
+            sGrid.innerHTML = Object.entries(TEST_DATA).slice(4).map(([k, v]) => renderCard(k, v)).join('');
+        }
+
+        function checkKnowledge(key) {
+            const val = document.getElementById(`def-${key}`).value.toLowerCase();
+            const data = TEST_DATA[key];
+            const isCorrect = data.keys.some(k => val.includes(k)) && val.length > 10;
+            const nudge = document.getElementById(`nudge-${key}`);
+            const status = document.getElementById(`status-${key}`);
+
+            if (isCorrect) {
+                nudge.classList.remove('open');
+                status.innerText = '✅';
+                if (!state.completions[key]) {
+                    state.completions[key] = true;
+                    addXP(50);
+                }
+            } else {
+                nudge.classList.add('open');
+                status.innerText = '⚠️';
+            }
+            saveData();
+        }
+
+        function calcTrend(key) {
+            const s1 = parseFloat(document.getElementById(`s1-${key}`).value);
+            const s2 = parseFloat(document.getElementById(`s2-${key}`).value);
+            const testId = document.getElementById(`sel-${key}`).value;
+            const test = TEST_DATA[key].tests.find(t => t.id === testId);
+            const light = document.getElementById(`tl-${key}`);
+
+            if (isNaN(s1) || isNaN(s2)) { light.className = 'traffic-light bg-slate-200'; return; }
+
+            const improved = test.type === 'high' ? s2 > s1 : s2 < s1;
+            if (s2 === s1) light.className = 'traffic-light bg-amber-400';
+            else if (improved) light.className = 'traffic-light bg-emerald-500';
+            else light.className = 'traffic-light bg-rose-500';
+
+            updateSummaryStats();
+            updateChart();
+        }
+
+        function updateSummaryStats() {
+            const gender = document.getElementById('student-gender').value;
+            const improved = document.querySelectorAll('.traffic-light.bg-emerald-500').length;
+            document.getElementById('stat-up').innerText = improved;
+
+            let aboveNorm = 0;
+            Object.keys(TEST_DATA).forEach(key => {
+                const s2 = parseFloat(document.getElementById(`s2-${key}`).value);
+                const testId = document.getElementById(`sel-${key}`).value;
+                const test = TEST_DATA[key].tests.find(t => t.id === testId);
+                const normVal = test.norms[gender];
+                if (!isNaN(s2)) {
+                    const beat = test.type === 'high' ? s2 >= normVal : s2 <= normVal;
+                    if (beat) aboveNorm++;
+                }
+            });
+            document.getElementById('stat-norm').innerText = aboveNorm;
+        }
+
+        function addXP(amt) {
+            state.xp += amt;
+            document.getElementById('xp-total').innerText = state.xp;
+        }
+
+        function nav(step) {
+            document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(`step-${step}`).classList.add('active');
+            document.querySelectorAll('footer button').forEach((b, i) => {
+                b.classList.remove('bg-indigo-50', 'text-indigo-600');
+                if (i + 1 === step) {
+                    b.classList.add('bg-indigo-50', 'text-indigo-600');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function saveData() {
+            document.querySelectorAll('input, textarea, select').forEach(i => {
+                if (i.id) state.inputs[i.id] = i.value;
+            });
+            state.gender = document.getElementById('student-gender').value;
+            localStorage.setItem('pe9_workbook_v3_grace', JSON.stringify(state));
+            updateProgress();
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('pe9_workbook_v3_grace');
+            if (saved) {
+                state = JSON.parse(saved);
+                for (const [id, val] of Object.entries(state.inputs)) {
+                    const el = document.getElementById(id);
+                    if (el) el.value = val;
+                }
+                if (state.athlete) selectAthlete(state.athlete);
+                document.getElementById('xp-total').innerText = state.xp || 0;
+                Object.keys(TEST_DATA).forEach(k => {
+                    updateNorms(k);
+                    if (state.completions[k]) document.getElementById(`status-${k}`).innerText = '✅';
+                });
+            }
+        }
+
+        function updateProgress() {
+            const total = document.querySelectorAll('input, textarea').length;
+            let filled = 0;
+            document.querySelectorAll('input, textarea').forEach(i => { if (i.value.trim().length > 5) filled++ });
+            document.getElementById('progress-bar').style.width = `${(filled / total) * 100}%`;
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('fitnessChart').getContext('2d');
+            fitnessChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.values(TEST_DATA).map(d => d.name),
+                    datasets: [
+                        { label: 'Initial', data: [], backgroundColor: '#e2e8f0', borderRadius: 6 },
+                        { label: 'Final', data: [], backgroundColor: '#6366f1', borderRadius: 6 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { position: 'bottom', labels: { font: { family: 'Plus Jakarta Sans', weight: 'bold', size: 10 } } }
+                    },
+                    scales: { 
+                        y: { display: false }, 
+                        x: { grid: { display: false }, ticks: { font: { size: 9, weight: 'bold' } } } 
+                    }
+                }
+            });
+            updateChart();
+        }
+
+        function updateChart() {
+            if (!fitnessChart) return;
+            const s1 = Object.keys(TEST_DATA).map(k => parseFloat(document.getElementById(`s1-${k}`).value) || 0);
+            const s2 = Object.keys(TEST_DATA).map(k => parseFloat(document.getElementById(`s2-${k}`).value) || 0);
+            fitnessChart.data.datasets[0].data = s1;
+            fitnessChart.data.datasets[1].data = s2;
+            fitnessChart.update();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
