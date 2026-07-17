@@ -3,24 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Term 3 PE | Fitness & Mastery Portfolio</title>
+    <title>Waiheke High School | Term 3 PE Mastery Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        whs: {
+                            dark: '#002066',
+                            light: '#d1e6f6',
+                            accent: '#f0f7ff',
+                            gold: '#d97706',
+                            emerald: '#059669',
+                            rose: '#dc2626'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #f8fafc; 
+            background-color: #f0f4f9; /* Increased shading contrast against white cards */
             color: #0f172a; 
             scroll-behavior: smooth; 
+        }
+
+        /* Improved contrast and focus border on white card containers */
+        .whs-card {
+            background-color: #ffffff;
+            border: 2px solid #d1e6f6;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 15px -3px rgba(0, 32, 102, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .whs-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 32, 102, 0.15);
+            border-color: #002066;
         }
 
         .step-panel { display: none; }
         .step-panel.active { display: block; animation: slideUp 0.4s ease-out; }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -38,23 +69,30 @@
             transition: all 0.4s ease-in-out;
             opacity: 0;
         }
-        .clue-box.open { max-height: 300px; padding: 1.5rem; opacity: 1; margin-top: 1rem; }
+        .clue-box.open { max-height: 350px; padding: 1.5rem; opacity: 1; margin-top: 1rem; }
 
         .athlete-card {
             cursor: pointer;
-            transition: all 0.2s ease;
-            border: 2px solid transparent;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid #d1e6f6;
+            background-color: #ffffff;
+        }
+        .athlete-card:hover {
+            transform: translateY(-4px);
+            border-color: #002066;
+            box-shadow: 0 8px 20px rgba(0, 32, 102, 0.1);
         }
         .athlete-card.selected {
-            border-color: #4f46e5;
-            background: #eef2ff;
-            transform: translateY(-2px);
+            border-color: #002066;
+            background: #d1e6f6;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 32, 102, 0.15);
         }
 
         @media print {
             .no-print { display: none !important; }
-            body { background: white; }
-            .summary-page { border: none !important; box-shadow: none !important; padding: 0 !important; }
+            body { background: white !important; }
+            .whs-card { border: 1px solid #ccc !important; box-shadow: none !important; }
             .step-panel { display: none !important; }
             #step-7.step-panel { display: block !important; }
         }
@@ -62,328 +100,676 @@
 </head>
 <body class="pb-32">
 
-    <header class="no-print bg-white/90 backdrop-blur-md border-b sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <!-- WHS Header Branding -->
+    <header class="no-print bg-white/95 backdrop-blur-md border-b-4 border-whs-dark sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-6 py-3 flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center gap-4">
-                <div id="hud-year-badge" class="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-xl font-black shadow-lg">9</div>
+                <!-- WHS Logo Direct Render -->
+                <img src="input_file_0.png" alt="Waiheke High School Logo" class="h-14 w-auto object-contain hover:scale-105 transition-transform">
+                <div class="h-10 w-0.5 bg-whs-light hidden sm:block"></div>
                 <div>
-                    <h1 class="text-[10px] font-black tracking-widest uppercase text-slate-400">Year <span id="hud-year-text">9</span> | <span class="text-indigo-600">Fitness Mastery</span></h1>
+                    <h1 class="text-[11px] font-black tracking-widest uppercase text-whs-dark flex items-center gap-2">
+                        WAIHEKE HIGH SCHOOL <span class="bg-amber-500 text-white text-[9px] px-2 py-0.5 rounded-full font-sans tracking-normal font-bold">Year <span id="hud-year-text">9</span></span>
+                    </h1>
                     <div class="flex items-center gap-2 mt-1">
-                        <div class="w-32 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                            <div id="xp-bar-inner" class="h-full bg-amber-400 w-0 transition-all duration-700"></div>
+                        <div class="w-32 h-2 bg-whs-light rounded-full overflow-hidden">
+                            <div id="xp-bar-inner" class="h-full bg-amber-500 w-0 transition-all duration-700"></div>
                         </div>
-                        <span id="xp-display" class="text-[9px] font-bold text-slate-500">0 XP</span>
+                        <span id="xp-display" class="text-[10px] font-bold text-whs-dark">0 Mastery XP</span>
                     </div>
                 </div>
             </div>
             
-            <nav class="hidden md:flex gap-1 bg-slate-50 p-1 rounded-2xl border border-slate-100">
-                <button onclick="nav(1)" class="px-4 py-2 text-[10px] font-bold uppercase hover:bg-white rounded-xl transition-all">Profile</button>
-                <button onclick="nav(2)" class="px-4 py-2 text-[10px] font-bold uppercase hover:bg-white rounded-xl transition-all">Tracker</button>
-                <button onclick="nav(5)" class="px-4 py-2 text-[10px] font-bold uppercase hover:bg-white rounded-xl transition-all">Plan</button>
-                <button onclick="nav(7)" class="px-4 py-2 text-[10px] font-bold uppercase bg-indigo-600 text-white rounded-xl shadow-md">Turn In</button>
+            <nav class="flex flex-wrap gap-1 bg-whs-accent p-1.5 rounded-2xl border border-whs-light">
+                <button onclick="nav(1)" id="tb-1" class="px-3 py-1.5 text-[10px] font-extrabold uppercase hover:bg-white rounded-xl transition-all text-whs-dark">Profile</button>
+                <button onclick="nav(2)" id="tb-2" class="px-3 py-1.5 text-[10px] font-extrabold uppercase hover:bg-white rounded-xl transition-all text-whs-dark">Tracker</button>
+                <button onclick="nav(3)" id="tb-3" class="px-3 py-1.5 text-[10px] font-extrabold uppercase hover:bg-white rounded-xl transition-all text-whs-dark">Health</button>
+                <button onclick="nav(4)" id="tb-4" class="px-3 py-1.5 text-[10px] font-extrabold uppercase hover:bg-white rounded-xl transition-all text-whs-dark">Skills</button>
+                <button onclick="nav(5)" id="tb-5" class="px-3 py-1.5 text-[10px] font-extrabold uppercase hover:bg-white rounded-xl transition-all text-whs-dark">Plan</button>
+                <button onclick="nav(6)" id="tb-6" class="px-3 py-1.5 text-[10px] font-extrabold uppercase hover:bg-white rounded-xl transition-all text-whs-dark">Review</button>
+                <button onclick="nav(7)" id="tb-7" class="px-3 py-1.5 text-[10px] font-extrabold uppercase bg-whs-dark text-white rounded-xl shadow-md hover:bg-whs-gold transition-colors">Recap ➔</button>
             </nav>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-6 mt-12">
+    <main class="max-w-6xl mx-auto px-6 mt-10">
 
-        <!-- STEP 1: IDENTITY -->
-        <section id="step-1" class="step-panel active">
-            <div class="grid lg:grid-cols-3 gap-12">
-                <div class="lg:col-span-2 space-y-8">
-                    <div class="mb-6">
-                        <h2 class="text-4xl font-black tracking-tight text-slate-900 italic">Step 01: Profile & <span class="text-indigo-600">Year Group</span></h2>
-                        <p class="text-slate-500 font-medium mt-4">Select your mentor and set your Year Group. Year 10 students have higher fitness benchmarks than Year 9s. Don't forget to save your progress!</p>
-                    </div>
+        <!-- STEP 1: IDENTITY & PERSISTENCE -->
+        <section id="step-1" class="step-panel active space-y-8">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white p-6 rounded-3xl border-2 border-whs-light">
+                <div>
+                    <h2 class="text-3xl font-black text-whs-dark tracking-tight">Step 01: Profile & <span class="text-whs-gold">Mentor Selection</span></h2>
+                    <p class="text-slate-500 font-medium text-sm mt-1">Select your mentor and configure your Year Group class. Year 10 benchmarks reflect age development.</p>
+                </div>
+                <img src="input_file_0.png" alt="WHS Branding" class="h-10 w-auto object-contain hidden md:block">
+            </div>
 
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Athlete Grid Selector -->
+                <div class="lg:col-span-2 space-y-6">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider block px-1">Choose Your NZ Sporting Mentor</h3>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="athlete-grid"></div>
 
-                    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
+                    <!-- Personal Information Form -->
+                    <div class="whs-card p-6 space-y-6">
+                        <h3 class="text-sm font-black text-whs-dark uppercase tracking-wider border-b pb-2 flex items-center gap-2">
+                            <span>👤</span> Class Enrolment Details
+                        </h3>
                         <div class="grid md:grid-cols-2 gap-6">
                             <div class="space-y-2">
                                 <label class="text-[10px] font-bold uppercase text-slate-400 tracking-widest block px-1">Full Name</label>
-                                <input type="text" id="student-name" oninput="saveData()" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-indigo-500 outline-none transition-all font-medium">
+                                <input type="text" id="student-name" oninput="saveData(); syncSummaryHeader()" class="w-full p-4 bg-whs-accent rounded-2xl border-2 border-transparent focus:border-whs-dark outline-none transition-all font-semibold">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-[10px] font-bold uppercase text-slate-400 tracking-widest block px-1">Year Group</label>
-                                <select id="student-year" onchange="updateYearUI(); saveData()" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-indigo-500 outline-none transition-all font-bold">
+                                <select id="student-year" onchange="updateYearUI(); saveData()" class="w-full p-4 bg-whs-accent rounded-2xl border-2 border-transparent focus:border-whs-dark outline-none transition-all font-bold text-whs-dark">
                                     <option value="9">Year 9 (12-13yrs)</option>
                                     <option value="10">Year 10 (14-15yrs)</option>
                                 </select>
                             </div>
                             <div class="space-y-2">
                                 <label class="text-[10px] font-bold uppercase text-slate-400 tracking-widest block px-1">Comparison Gender</label>
-                                <select id="student-gender" onchange="renderTracker(); saveData()" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-indigo-500 outline-none transition-all font-bold text-indigo-600">
+                                <select id="student-gender" onchange="renderTracker(); saveData()" class="w-full p-4 bg-whs-accent rounded-2xl border-2 border-transparent focus:border-whs-dark outline-none transition-all font-bold text-whs-dark">
                                     <option value="female">Female</option>
                                     <option value="male">Male</option>
                                 </select>
                             </div>
                             <div class="flex flex-col justify-end">
-                                <button onclick="nav(2)" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-slate-900 transition-all">Begin Testing ➔</button>
+                                <button onclick="nav(2)" class="w-full bg-whs-dark text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-whs-gold transition-all shadow-lg">Begin Testing & Tracking ➔</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Side Info: Trophy Room & Mentor Spec Card -->
                 <div class="space-y-6">
-                    <div id="persistence-box" class="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-xl">
-                        <h3 class="font-black text-lg mb-2">💾 Portable Save</h3>
-                        <p class="text-slate-400 text-[10px] leading-relaxed mb-6 uppercase font-bold">Moving computers? Download your data now and upload it in your next lesson.</p>
+                    <!-- Dynamic Profile Card with Shading Contrast -->
+                    <div class="bg-white border-2 border-whs-light rounded-3xl p-6 shadow-sm text-center relative overflow-hidden">
+                        <div class="absolute top-0 right-0 left-0 h-2 bg-whs-dark"></div>
+                        <div id="avatar-preview" class="text-8xl my-4">👤</div>
+                        <h4 id="avatar-name" class="font-black text-xl text-whs-dark">Select a Mentor</h4>
+                        <p id="avatar-position" class="text-[10px] uppercase font-extrabold text-whs-gold mt-1">Mentor Selection Required</p>
+                        
+                        <div class="mt-4 pt-4 border-t border-whs-light text-left text-xs text-slate-600 space-y-2" id="avatar-details-box">
+                            <p class="italic text-center">Your mentor will guide you through core fitness testing and action-plan parameters.</p>
+                        </div>
+                    </div>
+
+                    <!-- Portable persistence system with high contrast styling -->
+                    <div class="bg-whs-dark rounded-3xl p-6 text-white shadow-xl">
+                        <h3 class="font-black text-lg mb-2 flex items-center gap-2">💾 WHS Portable Cloud</h3>
+                        <p class="text-whs-light text-[10px] leading-relaxed mb-4 uppercase font-bold">Use this to transfer your workbook progress between school devices and home.</p>
                         <div class="grid grid-cols-2 gap-3">
-                            <button onclick="exportData()" class="bg-white/10 hover:bg-white/20 p-3 rounded-xl text-[10px] font-black uppercase border border-white/10 transition-all">Download</button>
-                            <label class="bg-indigo-600 hover:bg-indigo-500 p-3 rounded-xl text-[10px] font-black uppercase text-center cursor-pointer transition-all">
+                            <button onclick="exportData()" class="bg-white/10 hover:bg-white/20 p-3 rounded-xl text-[10px] font-black uppercase border border-white/10 transition-all text-center">Download</button>
+                            <label class="bg-whs-gold hover:bg-amber-600 p-3 rounded-xl text-[10px] font-black uppercase text-center cursor-pointer transition-all">
                                 Upload <input type="file" class="hidden" id="file-input" onchange="importData(event)">
                             </label>
                         </div>
                     </div>
-                    <div class="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm text-center">
-                        <div id="avatar-preview" class="text-8xl mb-4">👤</div>
-                        <h4 id="avatar-name" class="font-black text-xl">Choose Mentor</h4>
-                        <p id="avatar-trait" class="text-[10px] uppercase font-bold text-indigo-500 mt-2">Mentor Selection Required</p>
+
+                    <!-- Trophy Room -->
+                    <div class="bg-white border-2 border-whs-light rounded-3xl p-6 shadow-sm">
+                        <h3 class="text-xs font-black text-whs-dark uppercase tracking-wider mb-4 flex items-center gap-2 border-b pb-2">🏆 WHS Achievements</h3>
+                        <div class="grid grid-cols-4 gap-2" id="trophy-room"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- STEP 2: TRACKER -->
+        <!-- STEP 2: PERFORMANCE TRACKER -->
         <section id="step-2" class="step-panel space-y-8">
-            <div class="mb-6 flex flex-col md:flex-row justify-between items-end gap-6">
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 bg-white p-6 rounded-3xl border-2 border-whs-light">
                 <div class="max-w-2xl">
-                    <h2 class="text-4xl font-black tracking-tight text-slate-900 italic">Step 02: Performance <span class="text-indigo-600">Tracker</span></h2>
-                    <p class="text-slate-500 font-medium mt-4">Select your test for each component. Benchmarks adjust automatically based on your Year and Gender. Aim for the green light!</p>
+                    <h2 class="text-3xl font-black text-whs-dark tracking-tight">Step 02: Performance <span class="text-whs-gold">Tracker</span></h2>
+                    <p class="text-slate-500 font-medium text-sm mt-1">Select your preferred test for each component. Targets adapt dynamically to biological gender standards for Year 9 and Year 10 students.</p>
                 </div>
-                <div class="bg-slate-900 text-white px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest">
-                    Target: Year <span id="tracker-year-val">9</span> Average
+                <div class="bg-whs-dark text-white px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest shrink-0">
+                    Target Set: Year <span id="tracker-year-val">9</span> Normative Range
                 </div>
             </div>
 
-            <div class="bg-white border border-slate-200 rounded-[2.5rem] overflow-hidden shadow-sm overflow-x-auto">
+            <!-- Testing table custom container for contrast -->
+            <div class="bg-white border-2 border-whs-light rounded-3xl overflow-hidden shadow-sm overflow-x-auto">
                 <table class="w-full text-left min-w-[950px]">
-                    <thead class="bg-slate-50 border-b border-slate-200">
+                    <thead class="bg-whs-accent border-b-2 border-whs-light text-whs-dark">
                         <tr>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Component</th>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Select Test</th>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">NZ Avg Benchmark</th>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Score 1</th>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Score 2</th>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Trend</th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-wider">Component of Fitness</th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-wider">Testing Protocol Options</th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-wider text-center">NZ Average Benchmark</th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-wider text-center">Baseline (Score 1)</th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-wider text-center">Final (Score 2)</th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-wider text-center">Developmental Trend</th>
                         </tr>
                     </thead>
-                    <tbody id="tracker-body" class="divide-y divide-slate-100"></tbody>
+                    <tbody id="tracker-body" class="divide-y divide-whs-light"></tbody>
                 </table>
             </div>
 
             <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-white p-10 rounded-[3rem] border border-slate-200 shadow-sm">
-                    <h4 class="font-black text-xl mb-8 flex justify-between items-center text-slate-800 italic">Physical Growth <span class="text-[9px] bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full uppercase tracking-tighter">Term 3 Progress</span></h4>
+                <!-- Bar chart display -->
+                <div class="bg-white p-8 rounded-3xl border-2 border-whs-light shadow-sm">
+                    <h4 class="font-black text-xl text-whs-dark mb-6 flex justify-between items-center italic border-b pb-2">
+                        <span>📊 Testing Period Comparison</span>
+                        <span class="text-[9px] bg-whs-light text-whs-dark px-3 py-1 rounded-full uppercase font-black">Score 1 vs Score 2</span>
+                    </h4>
                     <div class="chart-container">
                         <canvas id="fitnessChart"></canvas>
                     </div>
                 </div>
-                <div id="mentor-advice" class="bg-slate-900 text-white p-10 rounded-[3rem] relative overflow-hidden flex flex-col justify-center">
-                    <div class="text-5xl opacity-20 absolute -right-4 -bottom-4" id="tip-icon">🏅</div>
-                    <h4 class="text-indigo-400 text-xs font-black uppercase tracking-widest mb-4">Mentor Tip</h4>
-                    <p id="tip-text" class="text-lg font-bold italic leading-relaxed">"Select an athlete in the Profile tab to receive specialized training advice!"</p>
+
+                <!-- Mentor tip module connected to core selector -->
+                <div id="mentor-advice" class="bg-whs-dark text-white p-8 rounded-3xl relative overflow-hidden flex flex-col justify-center shadow-lg border-b-4 border-whs-gold">
+                    <div class="text-8xl opacity-10 absolute -right-6 -bottom-6" id="tip-icon">🏅</div>
+                    <span class="text-whs-gold text-xs font-black uppercase tracking-widest mb-2">Mentor Feedback</span>
+                    <h4 id="tip-title" class="font-bold text-lg mb-2">Advice from your athletic mentor:</h4>
+                    <p id="tip-text" class="text-sm font-medium italic leading-relaxed text-slate-200">"Select an athlete in the Profile tab to receive training insights tailored to your physical target goals!"</p>
                 </div>
             </div>
         </section>
 
         <!-- STEP 3: HEALTH LITERACY -->
         <section id="step-3" class="step-panel space-y-8">
-            <div class="max-w-2xl">
-                <h2 class="text-4xl font-black tracking-tight text-slate-900 italic">Step 03: Health <span class="text-indigo-600">Literacy</span></h2>
-                <p class="text-slate-500 font-medium mt-4">Define these 4 Health-Related components. Use the "Get Clue" button if you're stuck—it will show you where it's used and the key words you need.</p>
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white p-6 rounded-3xl border-2 border-whs-light">
+                <div class="max-w-2xl">
+                    <h2 class="text-3xl font-black text-whs-dark tracking-tight">Step 03: Health <span class="text-whs-gold">Literacy</span></h2>
+                    <p class="text-slate-500 font-medium text-sm mt-1">Develop academic definitions for core health-related physical structures. Use your Clue sheet to target key scientific concepts.</p>
+                </div>
+                <img src="input_file_0.png" alt="WHS Branding" class="h-10 w-auto object-contain hidden md:block">
             </div>
             <div class="grid md:grid-cols-2 gap-8" id="health-grid"></div>
         </section>
 
         <!-- STEP 4: SKILL MATRIX -->
         <section id="step-4" class="step-panel space-y-8">
-             <div class="max-w-2xl">
-                <h2 class="text-4xl font-black tracking-tight text-slate-900 italic">Step 04: Skill <span class="text-indigo-600">Matrix</span></h2>
-                <p class="text-slate-500 font-medium mt-4">Skill-related components focus on efficiency. How do these traits help you in sport? Check the clues for sport scenarios!</p>
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white p-6 rounded-3xl border-2 border-whs-light">
+                <div class="max-w-2xl">
+                    <h2 class="text-3xl font-black text-whs-dark tracking-tight">Step 04: Skill <span class="text-whs-gold">Matrix</span></h2>
+                    <p class="text-slate-500 font-medium text-sm mt-1">Explore physical performance components linked directly to sport efficiency. Synthesize sport-specific context below.</p>
+                </div>
+                <img src="input_file_0.png" alt="WHS Branding" class="h-10 w-auto object-contain hidden md:block">
             </div>
             <div class="grid md:grid-cols-2 gap-8" id="skill-grid"></div>
         </section>
 
-        <!-- STEP 5: ACTION BLUEPRINT -->
+        <!-- STEP 5: ACTION BLUEPRINT & LOG -->
         <section id="step-5" class="step-panel space-y-8">
-            <div class="max-w-2xl">
-                <h2 class="text-4xl font-black tracking-tight text-slate-900 italic">Step 05: Action <span class="text-indigo-600">Blueprint</span></h2>
-                <p class="text-slate-500 font-medium mt-4">Design your training cycle. Explain your goals and how Methods (MOT) and Principles (POT) help you achieve them.</p>
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white p-6 rounded-3xl border-2 border-whs-light">
+                <div class="max-w-2xl">
+                    <h2 class="text-3xl font-black text-whs-dark tracking-tight">Step 05: Action <span class="text-whs-gold">Blueprint</span></h2>
+                    <p class="text-slate-500 font-medium text-sm mt-1">Design an expert physical intervention. Use the SMART planner layout to establish your term target milestones.</p>
+                </div>
+                <img src="input_file_0.png" alt="WHS Branding" class="h-10 w-auto object-contain hidden md:block">
             </div>
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="font-black text-indigo-600 uppercase text-xs tracking-widest">SMART Goal</h3>
-                    <textarea id="plan-goal" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-xl p-4 text-sm outline-none focus:ring-2 ring-indigo-500/20" placeholder="I want to improve my cardiovascular endurance by..."></textarea>
-                </div>
-                <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="font-black text-indigo-600 uppercase text-xs tracking-widest">Method (MOT)</h3>
-                    <textarea id="plan-mot" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-xl p-4 text-sm outline-none focus:ring-2 ring-indigo-500/20" placeholder="Continuous Training, Circuit, Plyometrics..."></textarea>
-                </div>
-                <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="font-black text-indigo-600 uppercase text-xs tracking-widest">Principle (POT)</h3>
-                    <textarea id="plan-pot" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-xl p-4 text-sm outline-none focus:ring-2 ring-indigo-500/20" placeholder="Specificity, Overload, Progression..."></textarea>
-                </div>
-            </div>
-            <div class="bg-slate-900 text-white p-10 rounded-[3rem]">
-                <h3 class="text-xl font-black mb-8 text-center uppercase tracking-widest text-xs text-indigo-400">Practical Lesson Log</h3>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="space-y-4">
-                        <span class="text-[9px] font-black bg-indigo-600 text-white px-5 py-2 rounded-full">Lesson 1 Diary</span>
-                        <textarea id="lp1" oninput="saveData()" class="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm outline-none focus:border-indigo-500"></textarea>
-                    </div>
-                    <div class="space-y-4">
-                        <span class="text-[9px] font-black bg-indigo-600 text-white px-5 py-2 rounded-full">Lesson 2 Diary</span>
-                        <textarea id="lp2" oninput="saveData()" class="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm outline-none focus:border-indigo-500"></textarea>
-                    </div>
-                    <div class="space-y-4">
-                        <span class="text-[9px] font-black bg-indigo-600 text-white px-5 py-2 rounded-full">Lesson 3 Diary</span>
-                        <textarea id="lp3" oninput="saveData()" class="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm outline-none focus:border-indigo-500"></textarea>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- STEP 6: REFLECTION -->
-        <section id="step-6" class="step-panel space-y-8">
-            <div class="max-w-2xl">
-                <h2 class="text-4xl font-black tracking-tight text-slate-900 italic">Step 06: Review & <span class="text-indigo-600">Reflection</span></h2>
-                <p class="text-slate-500 font-medium mt-4">Analyze your results. Use the Traffic Light colors from your Tracker to help explain your growth this term.</p>
+            <!-- SMART Goal Breakdown Panel -->
+            <div class="whs-card p-6 md:p-8 space-y-6">
+                <h3 class="text-lg font-black text-whs-dark uppercase tracking-wider border-b-2 border-whs-light pb-2 flex items-center justify-between">
+                    <span>📐 SMART Goal Builder</span>
+                    <span class="text-xs bg-whs-light text-whs-dark px-3 py-1 rounded-full font-bold">Goal Breakdown Framework</span>
+                </h3>
+                
+                <div class="grid md:grid-cols-5 gap-4">
+                    <div class="p-4 rounded-xl bg-whs-accent border border-whs-light text-center">
+                        <div class="text-xl font-black text-whs-dark mb-1">S</div>
+                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-500">Specific</div>
+                        <p class="text-[10px] mt-1 text-slate-600">Which physical component are you changing?</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-whs-accent border border-whs-light text-center">
+                        <div class="text-xl font-black text-whs-dark mb-1">M</div>
+                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-500">Measurable</div>
+                        <p class="text-[10px] mt-1 text-slate-600">What specific scores or testing metrics?</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-whs-accent border border-whs-light text-center">
+                        <div class="text-xl font-black text-whs-dark mb-1">A</div>
+                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-500">Achievable</div>
+                        <p class="text-[10px] mt-1 text-slate-600">Is this realistic for your term fitness range?</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-whs-accent border border-whs-light text-center">
+                        <div class="text-xl font-black text-whs-dark mb-1">R</div>
+                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-500">Relevant</div>
+                        <p class="text-[10px] mt-1 text-slate-600">Does it fit your sport/mentor position?</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-whs-accent border border-whs-light text-center">
+                        <div class="text-xl font-black text-whs-dark mb-1">T</div>
+                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-500">Time-bound</div>
+                        <p class="text-[10px] mt-1 text-slate-600">By which week will we benchmark again?</p>
+                    </div>
+                </div>
+
+                <!-- Interactive SMART Goal Box with Dynamic Examples based on Selected Athlete -->
+                <div class="mt-6 space-y-4">
+                    <div class="p-4 bg-whs-accent rounded-2xl border border-whs-light">
+                        <h4 class="text-xs font-black text-whs-dark uppercase tracking-wider mb-2">💡 Avatar Goal Example (Based on your chosen mentor)</h4>
+                        <p id="smart-avatar-example" class="text-sm font-semibold italic text-whs-dark">Select a mentor on step 1 to view their custom SMART training goal example.</p>
+                    </div>
+                    <textarea id="plan-goal" oninput="saveData(); validateSmartGoal()" class="w-full h-32 bg-slate-50 rounded-2xl p-5 text-sm border-2 border-slate-200 outline-none focus:border-whs-dark" placeholder="Compose your SMART goal based on the breakdown above..."></textarea>
+                    <div id="smart-validation-status" class="text-xs font-bold text-slate-400">Word Count: 0 / 20</div>
+                </div>
             </div>
+
+            <!-- Theory Inputs (MOT, POT) with examples -->
             <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm space-y-6">
-                    <h3 class="text-xl font-black">Future Aspirations</h3>
-                    <textarea id="future-goals" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-2xl p-4 text-sm" placeholder="I plan to keep training my..."></textarea>
+                <div class="whs-card p-6 space-y-4">
+                    <h3 class="font-black text-whs-dark uppercase text-xs tracking-widest border-b pb-2">Method of Training (MOT)</h3>
+                    <p class="text-xs text-slate-500 font-medium">Explain the specific structure of training you will apply to progress this goal (e.g. Continuous, Circuit, Interval, Resistance, Plyometrics).</p>
+                    <textarea id="plan-mot" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-xl p-4 text-sm border border-slate-200 outline-none focus:border-whs-dark" placeholder="Continuous training will build up my aerobic baseline because..."></textarea>
                 </div>
-                <div class="bg-slate-900 text-white p-8 rounded-[2.5rem] space-y-6">
-                    <h3 class="text-xl font-black text-indigo-400">Extracurricular Log</h3>
-                    <textarea id="extra-activity" oninput="saveData()" class="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm text-slate-200 outline-none" placeholder="Outside of PE I play for..."></textarea>
+                <div class="whs-card p-6 space-y-4">
+                    <h3 class="font-black text-whs-dark uppercase text-xs tracking-widest border-b pb-2">Principle of Training (POT)</h3>
+                    <p class="text-xs text-slate-500 font-medium">Which guiding rule will dictate your session load? (e.g. Specificity, Progressive Overload, Reversibility, Frequency/Intensity/Time/Type).</p>
+                    <textarea id="plan-pot" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-xl p-4 text-sm border border-slate-200 outline-none focus:border-whs-dark" placeholder="Specificity ensures that we are targetting exactly the muscle groups used in..."></textarea>
+                </div>
+            </div>
+
+            <!-- Highly Detailed Practical Lesson Log with Model Answers -->
+            <div class="bg-whs-dark text-white p-8 rounded-3xl space-y-8 shadow-xl">
+                <div class="border-b border-whs-light/20 pb-4 text-center">
+                    <h3 class="text-2xl font-black uppercase tracking-wider text-whs-light">📓 Practical Lesson Logs</h3>
+                    <p class="text-slate-300 text-xs mt-1">Complete your diary after each practical lesson. Complete detailed fields for high grade criteria.</p>
+                </div>
+
+                <!-- Model Example Entry Accordion -->
+                <div class="bg-white/5 rounded-2xl border border-white/10 p-5">
+                    <h4 class="text-xs font-black uppercase tracking-wider text-whs-gold mb-3 flex items-center justify-between">
+                        <span>🏆 MODEL EXCELLENCE ENTRY</span>
+                        <span class="bg-whs-gold/20 text-whs-gold px-2.5 py-0.5 rounded text-[9px] font-bold">Standard Exemplar</span>
+                    </h4>
+                    <div class="grid md:grid-cols-2 gap-4 text-xs">
+                        <div class="space-y-1 bg-white/5 p-3 rounded-lg">
+                            <p><strong class="text-whs-light">Session Title:</strong> High-Intensity Shuttle Drill Blast</p>
+                            <p><strong class="text-whs-light">Date:</strong> 2026-08-12</p>
+                            <p><strong class="text-whs-light">Time & Duration:</strong> 13:45 | 45 minutes</p>
+                            <p><strong class="text-whs-light">Location:</strong> School Lower Field</p>
+                        </div>
+                        <div class="space-y-1 bg-white/5 p-3 rounded-lg">
+                            <p><strong class="text-whs-light">Method of Training (MOT):</strong> Interval Training</p>
+                            <p><strong class="text-whs-light">Principle of Training (POT):</strong> Specificity & Intensity</p>
+                            <p><strong class="text-whs-light">Component of Fitness (COF):</strong> Agility & Speed</p>
+                        </div>
+                    </div>
+                    <div class="mt-3 p-3 bg-white/5 rounded-lg text-xs leading-relaxed italic text-slate-200 border-l-2 border-whs-gold">
+                        "Today we ran 20-meter shuttles with 30-second recovery breaks. This was highly specific to netball play because of the constant stop-start transitions. I felt progressive overload during the final three runs as my heart rate was elevated and muscles burned, but I maintained correct foot positioning on turns."
+                    </div>
+                </div>
+
+                <!-- Interactive Lesson Logs -->
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Lesson 1 -->
+                    <div class="space-y-4 bg-white/5 p-6 rounded-2xl border border-white/10">
+                        <span class="text-[10px] font-black bg-whs-gold text-white px-4 py-1.5 rounded-full inline-block">Lesson 1 Log</span>
+                        <div class="space-y-3 text-xs mt-2">
+                            <div>
+                                <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">Session Title</label>
+                                <input type="text" id="lp1-title" oninput="saveData()" class="w-full p-2.5 bg-white/10 border border-white/20 rounded-xl outline-none focus:border-whs-light">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">Date</label>
+                                    <input type="date" id="lp1-date" oninput="saveData()" class="w-full p-2 bg-white/10 border border-white/20 rounded-xl outline-none">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">Time & Length</label>
+                                    <input type="text" id="lp1-time" oninput="saveData()" placeholder="e.g. 45 mins" class="w-full p-2 bg-white/10 border border-white/20 rounded-xl outline-none">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">Location</label>
+                                <input type="text" id="lp1-loc" oninput="saveData()" placeholder="e.g. Gym, Field" class="w-full p-2.5 bg-white/10 border border-white/20 rounded-xl outline-none">
+                            </div>
+                            <div class="grid grid-cols-3 gap-1">
+                                <input type="text" id="lp1-mot" oninput="saveData()" placeholder="MOT" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Method of Training">
+                                <input type="text" id="lp1-pot" oninput="saveData()" placeholder="POT" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Principle of Training">
+                                <input type="text" id="lp1-cof" oninput="saveData()" placeholder="COF" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Component of Fitness">
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">What did you do? (Detailed reflection)</label>
+                                <textarea id="lp1-reflection" oninput="saveData()" class="w-full h-32 bg-white/5 border border-white/10 rounded-xl p-3 text-xs outline-none focus:border-whs-light" placeholder="Explain how you met the principles..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="space-y-4 bg-white/5 p-6 rounded-2xl border border-white/10">
+                        <span class="text-[10px] font-black bg-whs-gold text-white px-4 py-1.5 rounded-full inline-block">Lesson 2 Log</span>
+                        <div class="space-y-3 text-xs mt-2">
+                            <div>
+                                <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">Session Title</label>
+                                <input type="text" id="lp2-title" oninput="saveData()" class="w-full p-2.5 bg-white/10 border border-white/20 rounded-xl outline-none focus:border-whs-light">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">Date</label>
+                                    <input type="date" id="lp2-date" oninput="saveData()" class="w-full p-2 bg-white/10 border border-white/20 rounded-xl outline-none">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">Time & Length</label>
+                                    <input type="text" id="lp2-time" oninput="saveData()" placeholder="e.g. 45 mins" class="w-full p-2 bg-white/10 border border-white/20 rounded-xl outline-none">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">Location</label>
+                                <input type="text" id="lp2-loc" oninput="saveData()" placeholder="e.g. Gym, Field" class="w-full p-2.5 bg-white/10 border border-white/20 rounded-xl outline-none">
+                            </div>
+                            <div class="grid grid-cols-3 gap-1">
+                                <input type="text" id="lp2-mot" oninput="saveData()" placeholder="MOT" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Method of Training">
+                                <input type="text" id="lp2-pot" oninput="saveData()" placeholder="POT" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Principle of Training">
+                                <input type="text" id="lp2-cof" oninput="saveData()" placeholder="COF" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Component of Fitness">
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">What did you do? (Detailed reflection)</label>
+                                <textarea id="lp2-reflection" oninput="saveData()" class="w-full h-32 bg-white/5 border border-white/10 rounded-xl p-3 text-xs outline-none focus:border-whs-light" placeholder="Explain how you met the principles..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 3 -->
+                    <div class="space-y-4 bg-white/5 p-6 rounded-2xl border border-white/10">
+                        <span class="text-[10px] font-black bg-whs-gold text-white px-4 py-1.5 rounded-full inline-block">Lesson 3 Log</span>
+                        <div class="space-y-3 text-xs mt-2">
+                            <div>
+                                <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">Session Title</label>
+                                <input type="text" id="lp3-title" oninput="saveData()" class="w-full p-2.5 bg-white/10 border border-white/20 rounded-xl outline-none focus:border-whs-light">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">Date</label>
+                                    <input type="date" id="lp3-date" oninput="saveData()" class="w-full p-2 bg-white/10 border border-white/20 rounded-xl outline-none">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">Time & Length</label>
+                                    <input type="text" id="lp3-time" oninput="saveData()" placeholder="e.g. 45 mins" class="w-full p-2 bg-white/10 border border-white/20 rounded-xl outline-none">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">Location</label>
+                                <input type="text" id="lp3-loc" oninput="saveData()" placeholder="e.g. Gym, Field" class="w-full p-2.5 bg-white/10 border border-white/20 rounded-xl outline-none">
+                            </div>
+                            <div class="grid grid-cols-3 gap-1">
+                                <input type="text" id="lp3-mot" oninput="saveData()" placeholder="MOT" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Method of Training">
+                                <input type="text" id="lp3-pot" oninput="saveData()" placeholder="POT" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Principle of Training">
+                                <input type="text" id="lp3-cof" oninput="saveData()" placeholder="COF" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Component of Fitness">
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">What did you do? (Detailed reflection)</label>
+                                <textarea id="lp3-reflection" oninput="saveData()" class="w-full h-32 bg-white/5 border border-white/10 rounded-xl p-3 text-xs outline-none focus:border-whs-light" placeholder="Explain how you met the principles..."></textarea>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- STEP 7: RECAP -->
-        <section id="step-7" class="step-panel space-y-12">
-            <div class="text-center no-print">
-                <h2 class="text-5xl font-black italic">Term 3 Fitness Recap</h2>
-                <p class="text-slate-500 max-w-xl mx-auto mt-4 italic">Confirm all data is correct. Once generated, this summary becomes your final assessment submission.</p>
-                <button onclick="generateSummary()" class="mt-10 bg-indigo-600 text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl hover:scale-105 transition-all">Compile Report Card ➔</button>
+        <!-- STEP 6: REFLECTION & GROWTH -->
+        <section id="step-6" class="step-panel space-y-8">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white p-6 rounded-3xl border-2 border-whs-light">
+                <div class="max-w-2xl">
+                    <h2 class="text-3xl font-black text-whs-dark tracking-tight">Step 06: Review & <span class="text-whs-gold">Reflection</span></h2>
+                    <p class="text-slate-500 font-medium text-sm mt-1">Reflect on your achievements and barriers. Analyze which specific physical attributes reached higher performance peaks.</p>
+                </div>
+                <img src="input_file_0.png" alt="WHS Branding" class="h-10 w-auto object-contain hidden md:block">
             </div>
 
-            <div id="summary-content" class="summary-page bg-white p-12 rounded-[3.5rem] border-2 border-slate-200 shadow-2xl relative overflow-hidden hidden">
-                <div class="flex flex-col md:flex-row justify-between items-start border-b pb-12 mb-12">
-                    <div>
-                        <p class="text-[10px] font-black uppercase text-indigo-600 tracking-widest">HPE Term 3 Assessment Portfolio</p>
-                        <h3 id="sum-name" class="text-5xl font-black text-slate-900 uppercase">Student Name</h3>
-                        <div class="flex gap-4 mt-6">
-                            <span id="sum-year-label" class="bg-slate-900 text-white px-5 py-2 rounded-xl text-xs font-black">Year 9 Portfolio</span>
-                            <span id="sum-xp" class="bg-amber-400 text-amber-900 px-5 py-2 rounded-xl text-xs font-black italic">0 XP</span>
+            <!-- Quantitative Analysis Columns (Improved, Constant, Declined) -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="whs-card p-6 border-l-4 border-l-emerald-600">
+                    <h3 class="font-black text-emerald-600 uppercase text-xs tracking-wider mb-2 flex items-center gap-1">🟢 Improved Fitness</h3>
+                    <p class="text-[10px] text-slate-500 mb-3">Which components improved since baseline?</p>
+                    <textarea id="ref-improved" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-xl p-3 text-xs border border-slate-200 outline-none" placeholder="I improved my..."></textarea>
+                </div>
+                <div class="whs-card p-6 border-l-4 border-l-amber-500">
+                    <h3 class="font-black text-amber-500 uppercase text-xs tracking-wider mb-2 flex items-center gap-1">🟡 Plateaued Fitness</h3>
+                    <p class="text-[10px] text-slate-500 mb-3">Which components remained static?</p>
+                    <textarea id="ref-plateau" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-xl p-3 text-xs border border-slate-200 outline-none" placeholder="My muscular strength..."></textarea>
+                </div>
+                <div class="whs-card p-6 border-l-4 border-l-rose-500">
+                    <h3 class="font-black text-rose-500 uppercase text-xs tracking-wider mb-2 flex items-center gap-1">🔴 Declined Fitness</h3>
+                    <p class="text-[10px] text-slate-500 mb-3">Which components declined?</p>
+                    <textarea id="ref-declined" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-xl p-3 text-xs border border-slate-200 outline-none" placeholder="My flexibility decreased because..."></textarea>
+                </div>
+            </div>
+
+            <div class="whs-card p-6 space-y-4">
+                <h3 class="font-black text-whs-dark uppercase text-xs tracking-wider">What are some reasons for these fitness changes?</h3>
+                <p class="text-[10px] text-slate-500">Attribute factors such as sleep, active attendance, recovery patterns, or specific athletic training.</p>
+                <textarea id="ref-reasons" oninput="saveData()" class="w-full h-24 bg-slate-50 rounded-xl p-4 text-xs border border-slate-200 outline-none" placeholder="I believe the changes happened because..."></textarea>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="whs-card p-6 space-y-4">
+                    <h3 class="font-black text-whs-dark uppercase text-xs tracking-wider">Future Goals & Aspirations</h3>
+                    <p class="text-[10px] text-slate-500">Outline goals for remaining semesters of Physical Education.</p>
+                    <textarea id="future-goals" oninput="saveData()" class="w-full h-24 bg-slate-50 rounded-xl p-4 text-xs border border-slate-200 outline-none" placeholder="For the rest of the year, I plan to..."></textarea>
+                </div>
+                <div class="whs-card p-6 bg-whs-accent space-y-4">
+                    <h3 class="font-black text-whs-dark uppercase text-xs tracking-wider">Extracurricular Activity log</h3>
+                    <p class="text-[10px] text-slate-500">Record lunch play, club sports, and physical tasks out of school.</p>
+                    <textarea id="extra-activity" oninput="saveData()" class="w-full h-24 bg-white rounded-xl p-4 text-xs border border-whs-light outline-none" placeholder="Outside of school classes, I play..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 7: TERM 3 FITNESS RECAP & TURN IN -->
+        <section id="step-7" class="step-panel space-y-12">
+            <div class="text-center no-print space-y-6">
+                <img src="input_file_0.png" alt="WHS Branding" class="h-20 w-auto object-contain mx-auto">
+                <h2 class="text-4xl font-black text-whs-dark italic">Term 3 Fitness Recap</h2>
+                <p class="text-slate-500 max-w-xl mx-auto italic text-sm">Review your term outputs and verify entries. Click compiling report below to generate a single-page printable assessment booklet sheet.</p>
+                <button onclick="generateSummary()" class="bg-whs-dark hover:bg-whs-gold text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl hover:scale-105 transition-all text-sm border-2 border-whs-light">Compile Official Report Card ➔</button>
+            </div>
+
+            <!-- Highly structured summary report sheet -->
+            <div id="summary-content" class="whs-card bg-white p-12 rounded-[3rem] border-4 border-whs-dark shadow-2xl relative overflow-hidden hidden space-y-8">
+                <!-- Top Badge Watermark -->
+                <div class="absolute top-0 right-0 left-0 h-4 bg-whs-dark"></div>
+                
+                <!-- School and Student Metadata header -->
+                <div class="flex flex-col md:flex-row justify-between items-start border-b-2 border-whs-light pb-8">
+                    <div class="space-y-2">
+                        <img src="input_file_0.png" alt="WHS Crest" class="h-16 w-auto object-contain mb-2">
+                        <p class="text-[10px] font-black uppercase text-whs-gold tracking-widest">Waiheke High School PE & Health</p>
+                        <h3 id="sum-name" class="text-4xl font-black text-whs-dark uppercase">Student Name</h3>
+                        <div class="flex gap-3">
+                            <span id="sum-year-label" class="bg-whs-dark text-white px-4 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider">Year Group Portfolio</span>
+                            <span id="sum-xp" class="bg-amber-500 text-white px-4 py-1 rounded-xl text-[10px] font-black italic tracking-wider">Mastery points</span>
                         </div>
                     </div>
                     <div class="text-right">
                         <div id="sum-avatar" class="text-8xl">👤</div>
-                        <p id="sum-mentor" class="text-[9px] font-black uppercase text-slate-400 mt-2">No Mentor Selected</p>
+                        <p id="sum-mentor" class="text-[10px] font-black uppercase text-whs-dark mt-2">Mentor</p>
+                        <p id="sum-mentor-pos" class="text-[9px] font-bold text-slate-500 uppercase"></p>
                     </div>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-16">
-                    <div>
-                        <h4 class="text-xs font-black uppercase tracking-widest text-indigo-500 mb-8 border-b pb-2">Top Performance Gains</h4>
-                        <div id="sum-improvements" class="space-y-4"></div>
+                <!-- Core sections summaries -->
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="space-y-6">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-whs-dark border-b pb-2 flex items-center justify-between">
+                            <span>🌿 Top Performance Gains</span>
+                            <span class="text-[9px] text-emerald-600 font-extrabold uppercase">Trend: Green</span>
+                        </h4>
+                        <div id="sum-improvements" class="space-y-3"></div>
                     </div>
-                    <div>
-                        <h4 class="text-xs font-black uppercase tracking-widest text-indigo-500 mb-8 border-b pb-2">Training Outcome</h4>
-                        <div class="space-y-6">
-                            <div class="bg-slate-50 p-6 rounded-2xl">
-                                <span class="text-[8px] font-black text-slate-400 uppercase">SMART Goal Statement</span>
-                                <p id="sum-goal" class="text-xs mt-2 italic font-medium"></p>
+
+                    <div class="space-y-6">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-whs-dark border-b pb-2">Training Outcome</h4>
+                        <div class="bg-whs-accent p-6 rounded-2xl border border-whs-light space-y-4">
+                            <div>
+                                <span class="text-[8px] font-black text-slate-400 uppercase">Interactive SMART Target Plan</span>
+                                <p id="sum-goal" class="text-xs mt-1 italic font-semibold text-whs-dark"></p>
                             </div>
-                            <div class="bg-slate-900 text-white p-6 rounded-2xl">
-                                <span class="text-[8px] font-black text-slate-500 uppercase">Final Future Goals</span>
-                                <p id="sum-reflection" class="text-xs mt-2 text-slate-300"></p>
+                            <div>
+                                <span class="text-[8px] font-black text-slate-400 uppercase">Future PE Targets</span>
+                                <p id="sum-reflection" class="text-xs mt-1 text-slate-700"></p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-20 pt-10 border-t flex justify-between items-center no-print">
-                    <p class="text-[9px] text-slate-400 italic font-bold">Generated via the Mastery Workbook Engine.</p>
-                    <button onclick="window.print()" class="bg-slate-900 text-white px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg">Print to PDF</button>
+                <!-- Footer and print triggers -->
+                <div class="mt-12 pt-8 border-t border-whs-light flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <p class="text-[9px] text-slate-400 italic font-bold">Waiheke High School HPE Assessment Sheet. Verified via Digital Mastery Engine.</p>
+                    <button onclick="window.print()" class="bg-whs-dark text-white hover:bg-whs-gold px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg transition-colors border-2 border-whs-light">Print Portfolio to PDF</button>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <nav class="no-print fixed bottom-8 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-xl border border-slate-200 py-3 px-3 rounded-[2.5rem] z-50 shadow-2xl flex gap-1">
-        <button onclick="nav(1)" id="nb-1" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Identity">👤</button>
-        <button onclick="nav(2)" id="nb-2" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Tracker">📊</button>
-        <button onclick="nav(3)" id="nb-3" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Health">🫀</button>
-        <button onclick="nav(4)" id="nb-4" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Skills">⚡</button>
-        <button onclick="nav(5)" id="nb-5" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Plan">🏗️</button>
-        <button onclick="nav(6)" id="nb-6" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Reflect">📈</button>
-        <button onclick="nav(7)" id="nb-7" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Recap">🏁</button>
+    <!-- Navigation bottom bar (Always active, no print mode) -->
+    <nav class="no-print fixed bottom-8 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-xl border-2 border-whs-light py-3 px-4 rounded-[2.5rem] z-50 shadow-2xl flex gap-1 items-center">
+        <button onclick="nav(1)" id="nb-1" class="w-12 h-12 flex items-center justify-center rounded-full transition-all text-lg hover:bg-whs-accent" title="Profile">👤</button>
+        <button onclick="nav(2)" id="nb-2" class="w-12 h-12 flex items-center justify-center rounded-full transition-all text-lg hover:bg-whs-accent" title="Tracker">📊</button>
+        <button onclick="nav(3)" id="nb-3" class="w-12 h-12 flex items-center justify-center rounded-full transition-all text-lg hover:bg-whs-accent" title="Health">🫀</button>
+        <button onclick="nav(4)" id="nb-4" class="w-12 h-12 flex items-center justify-center rounded-full transition-all text-lg hover:bg-whs-accent" title="Skills">⚡</button>
+        <button onclick="nav(5)" id="nb-5" class="w-12 h-12 flex items-center justify-center rounded-full transition-all text-lg hover:bg-whs-accent" title="Plan">🏗️</button>
+        <button onclick="nav(6)" id="nb-6" class="w-12 h-12 flex items-center justify-center rounded-full transition-all text-lg hover:bg-whs-accent" title="Reflect">📈</button>
+        <button onclick="nav(7)" id="nb-7" class="w-12 h-12 flex items-center justify-center rounded-full transition-all text-lg hover:bg-whs-accent" title="Recap">🏁</button>
     </nav>
 
     <script>
+        // Expanded sports configurations with detailed properties based on WHS requests
         const ATHLETES = [
-            { id: 'savea', name: 'Ardie Savea', sport: 'Rugby', emoji: '🏉', tips: { t2: "Strength is built in the weights room. Note every kg.", t5: "Specific strength training makes my leg drives powerful." } },
-            { id: 'carrington', name: 'Lisa Carrington', sport: 'Kayaking', emoji: '🛶', tips: { t2: "Cardiovascular endurance is engine room of kayaking.", t5: "I use continuous training to keep my paddle rate high." } },
-            { id: 'adams_v', name: 'Valerie Adams', sport: 'Shot Put', emoji: '☄️', tips: { t2: "Explosive power starts with a strong core base.", t5: "Plyometrics are my method of choice for explosive throwing." } },
-            { id: 'adams_s', name: 'Steven Adams', sport: 'Basketball', emoji: '🏀', tips: { t2: "Agility keeps me mobile under the hoop. Practice the T-Test!", t5: "Overload your drills to stay ahead of the defenders." } },
-            { id: 'nweke', name: 'Grace Nweke', sport: 'Netball', emoji: '🏐', tips: { t2: "Vertical jump power wins rebounds. Work those legs!", t5: "My plan focuses on jump height through explosive methods." } },
-            { id: 'williamson', name: 'Kane Williamson', sport: 'Cricket', emoji: '🏏', tips: { t2: "Reaction time is the difference between a 4 and a duck.", t5: "A SMART goal keeps my batting drills focused." } }
+            { 
+                id: 'nweke', 
+                name: 'Grace Nweke', 
+                sport: 'Netball', 
+                emoji: '🏐', 
+                position: 'Goal Shoot', 
+                strengths: 'Phenomenal vertical jump height, high-altitude ball gathering, solid body-balance stabilization under defense pressure.',
+                smartExample: 'To improve my Vertical Jump height by 5cm over the next 4 weeks of high-performance plyometric training to catch higher goal assists.',
+                tips: { 
+                    t2: "Vertical jump power holds rebounds! Perfect your timing and jump height checks.", 
+                    t5: "Explosive drills will increase the high-altitude catch targets we need on-court." 
+                } 
+            },
+            { 
+                id: 'savea', 
+                name: 'Ardie Savea', 
+                sport: 'Rugby', 
+                emoji: '🏉', 
+                position: 'Loose Forward (Number 8)', 
+                strengths: 'Explosive low-center strength, massive legs power output, agile step in defense tackle ranges.',
+                smartExample: 'To increase my 1RM Back Squat score by 15kg over 6 weeks of dedicated resistance loading to build my defensive leg drive.',
+                tips: { 
+                    t2: "Building explosive leg power starts inside the resistance racks. Log every single rep.", 
+                    t5: "Heavy resistance MOT combined with progressive overload POT is the key to field dominence." 
+                } 
+            },
+            { 
+                id: 'carrington', 
+                name: 'Dame Lisa Carrington', 
+                sport: 'Kayaking', 
+                emoji: '🛶', 
+                position: 'Sprint Kayak (K1/K2/K4)', 
+                strengths: 'Massive upper-body cardiovascular stamina, stroke efficiency under extreme lactic fatigue, high cadence maintenance.',
+                smartExample: 'To reduce my 12-minute field run average to under 11.5 minutes over 5 weeks of continuous endurance pacing training.',
+                tips: { 
+                    t2: "Stamina and endurance are the central engine. Pacing control is critical here.", 
+                    t5: "Use high cadence interval cycles to build specific speed endurance pacing." 
+                } 
+            },
+            { 
+                id: 'adams_v', 
+                name: 'Dame Valerie Adams', 
+                sport: 'Shot Put', 
+                emoji: '☄️', 
+                position: 'Athletic Thrower', 
+                strengths: 'Dynamic explosive output, rotational coordination, fast hips and shoulder speed delivery.',
+                smartExample: 'To increase my Board Jump baseline by 20cm by week 5 utilizing explosive Olympic clean and jerk mechanics.',
+                tips: { 
+                    t2: "Power isn't just mass; it is strength and speed matched together in one quick burst.", 
+                    t5: "Plyometrics bounding drills are key. Push for maximum vertical and horizontal power." 
+                } 
+            },
+            { 
+                id: 'adams_s', 
+                name: 'Steven Adams', 
+                sport: 'Basketball', 
+                emoji: '🏀', 
+                position: 'Center', 
+                strengths: 'Dominant screen strength, backboard box-out leverage, explosive foot agility inside the paint.',
+                smartExample: 'To decrease my T-Test Agility baseline time by 1.2 seconds in 4 weeks utilizing change-of-direction sprint runs.',
+                tips: { 
+                    t2: "Mobility inside the key saves games. Practice quick shuffle transitions on the T-test.", 
+                    t5: "Specific cone drills build that fast directional adjustment you need to box-out." 
+                } 
+            },
+            { 
+                id: 'williamson', 
+                name: 'Kane Williamson', 
+                sport: 'Cricket', 
+                emoji: '🏏', 
+                position: 'Top-Order Batsman', 
+                strengths: 'Lightning fast sensory reaction, superior hand-eye ball-strike coordination, deep mental focus.',
+                smartExample: 'To lower my Ruler Drop reaction rate baseline by 4cm in 3 weeks by completing ball reaction drills.',
+                tips: { 
+                    t2: "Your hand-eye coordination decides your run score. Track reaction triggers closely.", 
+                    t5: "Specific trigger capture methods build that fast boundary reaction time we need on slips." 
+                } 
+            }
         ];
 
+        // Testing data options, metrics and age group normative calibrations
         const TEST_DATA = {
-            cvf: { name: 'Cardiovascular Endurance', icon: '🫀', keys: ['oxygen', 'heart', 'lungs', 'long', 'aerobic'], example: 'Running the Beep Test or 12-minute run.', tests: [
+            cvf: { name: 'Cardiovascular Endurance', icon: '🫀', keys: ['oxygen', 'heart', 'lungs', 'long', 'aerobic'], example: 'Continuous rowing or long run pacing.', tests: [
                 { id: 'cv1', name: '12 Min Run', unit: 'm', type: 'high', norms: { y9: { m: 2200, f: 1950 }, y10: { m: 2400, f: 2100 } } },
                 { id: 'cv2', name: 'Beep Test', unit: 'lvl', type: 'high', norms: { y9: { m: 7.8, f: 6.5 }, y10: { m: 8.5, f: 7.1 } } },
                 { id: 'cv3', name: '2.4km Run', unit: 'min', type: 'low', norms: { y9: { m: 12.0, f: 13.5 }, y10: { m: 11.0, f: 12.5 } } }
             ]},
-            mstr: { name: 'Muscular Strength', icon: '💪', keys: ['maximum', 'force', 'single', 'one'], example: 'A 1RM Squat or opening a heavy door.', tests: [
+            mstr: { name: 'Muscular Strength', icon: '💪', keys: ['maximum', 'force', 'single', 'one'], example: 'Lifting heavy equipment once or pushing heavy gates.', tests: [
                 { id: 'st1', name: 'Grip Test', unit: 'kg', type: 'high', norms: { y9: { m: 28, f: 22 }, y10: { m: 35, f: 26 } } },
                 { id: 'st2', name: '1RM Test', unit: 'kg', type: 'high', norms: { y9: { m: 45, f: 30 }, y10: { m: 55, f: 40 } } }
             ]},
-            mend: { name: 'Muscular Endurance', icon: '🔋', keys: ['repeatedly', 'fatigue', 'time', 'long'], example: 'Performing 50 sit-ups or rowing 2km.', tests: [
+            mend: { name: 'Muscular Endurance', icon: '🔋', keys: ['repeatedly', 'fatigue', 'time', 'long'], example: 'Repetitive fitness loads like distance kayaking.', tests: [
                 { id: 'en1', name: 'Sit Ups (1m)', unit: 'reps', type: 'high', norms: { y9: { m: 35, f: 30 }, y10: { m: 40, f: 34 } } },
                 { id: 'en2', name: 'Push Up Max', unit: 'reps', type: 'high', norms: { y9: { m: 20, f: 15 }, y10: { m: 25, f: 18 } } },
                 { id: 'en3', name: 'Plank Hold', unit: 'sec', type: 'high', norms: { y9: { m: 60, f: 60 }, y10: { m: 80, f: 80 } } }
             ]},
-            flex: { name: 'Flexibility', icon: '🧘', keys: ['range', 'joint', 'motion', 'stretch'], example: 'Doing splits or reaching for a ball in tennis.', tests: [
+            flex: { name: 'Flexibility', icon: '🧘', keys: ['range', 'joint', 'motion', 'stretch'], example: 'Low bends or maximum limb stretch motions.', tests: [
                 { id: 'fl1', name: 'Sit & Reach', unit: 'cm', type: 'high', norms: { y9: { m: 5, f: 9 }, y10: { m: 7, f: 12 } } },
                 { id: 'fl2', name: 'Shoulder Test', unit: 'cm', type: 'low', norms: { y9: { m: 5, f: 3 }, y10: { m: 4, f: 2 } } }
             ]},
-            agi: { name: 'Agility', icon: '⚡', keys: ['direction', 'quickly', 'change', 'control'], example: 'Sidestepping a defender in rugby or netball.', tests: [
+            agi: { name: 'Agility', icon: '⚡', keys: ['direction', 'quickly', 'change', 'control'], example: 'Quick turn maneuvers inside sport boundaries.', tests: [
                 { id: 'ag1', name: 'Illinois Run', unit: 'sec', type: 'low', norms: { y9: { m: 18.2, f: 20.1 }, y10: { m: 17.5, f: 19.2 } } },
                 { id: 'ag2', name: 'T-Test', unit: 'sec', type: 'low', norms: { y9: { m: 11.5, f: 12.8 }, y10: { m: 10.8, f: 11.9 } } }
             ]},
-            bal: { name: 'Balance', icon: '🤸', keys: ['stable', 'gravity', 'still', 'upright'], example: 'A gymnast holding a handstand or beam walk.', tests: [
+            bal: { name: 'Balance', icon: '🤸', keys: ['stable', 'gravity', 'still', 'upright'], example: 'Gymnastic stances or stable surfboards positioning.', tests: [
                 { id: 'ba1', name: 'Stork Stand', unit: 'sec', type: 'high', norms: { y9: { m: 15, f: 15 }, y10: { m: 20, f: 20 } } }
             ]},
-            pow: { name: 'Muscular Power', icon: '💥', keys: ['speed', 'strength', 'burst', 'explosive'], example: 'An explosive vertical jump to win a rebound.', tests: [
+            pow: { name: 'Muscular Power', icon: '💥', keys: ['speed', 'strength', 'burst', 'explosive'], example: 'Explosive high vertical intercepts or dynamic throw starts.', tests: [
                 { id: 'po1', name: 'Broad Jump', unit: 'm', type: 'high', norms: { y9: { m: 1.8, f: 1.6 }, y10: { m: 2.1, f: 1.8 } } },
                 { id: 'po2', name: 'Vertical Jump', unit: 'cm', type: 'high', norms: { y9: { m: 35, f: 30 }, y10: { m: 42, f: 35 } } }
             ]},
-            spe: { name: 'Speed', icon: '🏃', keys: ['distance', 'time', 'fastest', 'velocity'], example: 'Usain Bolt running 100m in world record time.', tests: [
+            spe: { name: 'Speed', icon: '🏃', keys: ['distance', 'time', 'fastest', 'velocity'], example: 'Fast defensive chase runs or line sprints.', tests: [
                 { id: 'sp1', name: '30m Sprint', unit: 'sec', type: 'low', norms: { y9: { m: 5.2, f: 5.8 }, y10: { m: 4.9, f: 5.5 } } }
             ]},
-            rea: { name: 'Reaction Time', icon: '⏱️', keys: ['stimulus', 'signal', 'respond', 'time'], example: 'A goalkeeper reacting to a shot on goal.', tests: [
+            rea: { name: 'Reaction Time', icon: '⏱️', keys: ['stimulus', 'signal', 'respond', 'time'], example: 'Responding to ball bounce or start triggers.', tests: [
                 { id: 're1', name: 'Online Click', unit: 'ms', type: 'low', norms: { y9: { m: 350, f: 350 }, y10: { m: 300, f: 300 } } },
                 { id: 're2', name: 'Ruler Drop', unit: 'cm', type: 'low', norms: { y9: { m: 18, f: 20 }, y10: { m: 16, f: 18 } } }
             ]},
-            coo: { name: 'Coordination', icon: '🎾', keys: ['parts', 'together', 'senses', 'smoothly'], example: 'Juggling or hitting a fast cricket ball.', tests: [
+            coo: { name: 'Coordination', icon: '🎾', keys: ['parts', 'together', 'senses', 'smoothly'], example: 'Juggling or hand-eye racket play alignment.', tests: [
                 { id: 'co1', name: 'Wall Toss', unit: 'reps', type: 'high', norms: { y9: { m: 15, f: 15 }, y10: { m: 20, f: 20 } } }
             ] }
         };
 
-        let state = { xp: 0, athlete: null, inputs: {}, year: 9 };
+        // Static Achievement configurations
+        const TROPHIES = [
+            { id: 'profile', name: 'Athlete Core', icon: '🔥', desc: 'Select your mentor and input details.' },
+            { id: 'save', name: 'Save Master', icon: '💾', desc: 'Execute a JSON state save.' },
+            { id: 'baseline', name: 'Testing Pilot', icon: '📋', desc: 'Input initial base scores.' },
+            { id: 'final', name: 'Growth Tracker', icon: '📈', desc: 'Log final test results.' },
+            { id: 'smart', name: 'Architect', icon: '📐', desc: 'Complete valid SMART parameters.' },
+            { id: 'knowledge', name: 'HPE Scholar', icon: '🎓', desc: 'Verify definitions accurately.' },
+            { id: 'logs', name: 'Journalist', icon: '📝', desc: 'Complete all 3 detailed diaries.' },
+            { id: 'recap', name: 'Graduate', icon: '🏁', desc: 'Unlock final term overview summary.' }
+        ];
+
+        let state = { xp: 0, athlete: null, inputs: {}, year: 9, unlockedTrophies: [] };
         let fitnessChart = null;
 
         function init() {
             renderAthletes();
+            renderTrophies();
             renderTracker();
             renderKnowledge();
             loadData();
@@ -394,12 +780,25 @@
         function renderAthletes() {
             const grid = document.getElementById('athlete-grid');
             grid.innerHTML = ATHLETES.map(a => `
-                <div onclick="selectAthlete('${a.id}')" id="ath-${a.id}" class="athlete-card bg-white p-6 rounded-[2rem] text-center border border-slate-200 shadow-sm hover:shadow-md group">
-                    <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">${a.emoji}</div>
-                    <div class="text-[10px] font-black uppercase text-slate-900">${a.name}</div>
-                    <div class="text-[8px] text-indigo-500 font-bold uppercase">${a.sport}</div>
+                <div onclick="selectAthlete('${a.id}')" id="ath-${a.id}" class="athlete-card p-5 rounded-2xl text-center group border">
+                    <div class="text-5xl mb-3 group-hover:scale-110 transition-transform">${a.emoji}</div>
+                    <div class="text-[12px] font-black text-whs-dark uppercase tracking-tight">${a.name}</div>
+                    <div class="text-[9px] text-whs-gold font-bold uppercase tracking-widest">${a.sport}</div>
                 </div>
             `).join('');
+        }
+
+        function renderTrophies() {
+            const container = document.getElementById('trophy-room');
+            container.innerHTML = TROPHIES.map(t => {
+                const isUnlocked = state.unlockedTrophies.includes(t.id);
+                return `
+                    <div class="p-2.5 rounded-xl text-center border-2 ${isUnlocked ? 'bg-whs-accent border-whs-gold' : 'bg-slate-50 border-slate-200 opacity-40'} transition-all" title="${t.desc}">
+                        <div class="text-xl ${isUnlocked ? 'animate-bounce' : ''}">${t.icon}</div>
+                        <div class="text-[8px] font-black uppercase mt-1 text-whs-dark truncate">${t.name}</div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function selectAthlete(id) {
@@ -408,20 +807,37 @@
             const el = document.getElementById(`ath-${id}`);
             if(el) el.classList.add('selected');
             const a = ATHLETES.find(x => x.id === id);
+            
             document.getElementById('avatar-preview').innerText = a.emoji;
             document.getElementById('avatar-name').innerText = a.name;
-            document.getElementById('avatar-trait').innerText = `Mentored by ${a.name}`;
+            document.getElementById('avatar-position').innerText = a.position;
+            
+            // Render highly comprehensive visual/text specifications
+            document.getElementById('avatar-details-box').innerHTML = `
+                <p><strong>Sport Discipline:</strong> ${a.sport}</p>
+                <p><strong>Strengths Profile:</strong> ${a.strengths}</p>
+                <p class="mt-2 text-whs-gold font-black">Scroll to Step 5 to see ${a.name}'s specific SMART goal template!</p>
+            `;
+
+            // Update Step 5 Dynamic Example
+            document.getElementById('smart-avatar-example').innerText = `"${a.smartExample}"`;
+
             updateMentorTip();
+            unlockTrophy('profile');
             saveData();
         }
 
         function updateYearUI() {
-            state.year = document.getElementById('student-year').value;
-            document.getElementById('hud-year-badge').innerText = state.year;
+            state.year = parseInt(document.getElementById('student-year').value);
             document.getElementById('hud-year-text').innerText = state.year;
             document.getElementById('tracker-year-val').innerText = state.year;
             renderTracker();
             updateChart();
+        }
+
+        function syncSummaryHeader() {
+            const rawName = document.getElementById('student-name').value;
+            document.getElementById('sum-name').innerText = rawName || "Athlete Profile";
         }
 
         function renderTracker() {
@@ -429,27 +845,27 @@
             body.innerHTML = Object.entries(TEST_DATA).map(([key, data]) => {
                 const options = data.tests.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
                 return `
-                    <tr class="hover:bg-slate-50/50">
+                    <tr class="hover:bg-whs-accent/40 transition-colors">
                         <td class="px-8 py-5">
                             <div class="flex items-center gap-3">
-                                <span class="text-xl">${data.icon}</span>
-                                <span class="font-black text-[10px] text-slate-800 uppercase">${data.name}</span>
+                                <span class="text-2xl">${data.icon}</span>
+                                <span class="font-extrabold text-xs text-whs-dark uppercase tracking-tight">${data.name}</span>
                             </div>
                         </td>
                         <td class="px-8 py-5">
-                            <select id="sel-${key}" onchange="updateNorms('${key}'); saveData()" class="bg-slate-100 border-none rounded-xl p-2 text-[10px] font-bold w-full outline-none">${options}</select>
+                            <select id="sel-${key}" onchange="updateNorms('${key}'); saveData()" class="bg-white border-2 border-whs-light rounded-xl p-2.5 text-[11px] font-bold w-full outline-none focus:border-whs-dark">${options}</select>
                         </td>
                         <td class="px-8 py-5 text-center">
-                            <div id="norm-container-${key}" class="flex flex-col gap-1 items-center"></div>
+                            <div id="norm-container-${key}" class="flex flex-col gap-1 items-center font-bold"></div>
                         </td>
                         <td class="px-8 py-5">
-                            <input type="number" step="0.1" id="s1-${key}" oninput="calcTrend('${key}'); saveData()" class="w-16 bg-white border-2 border-slate-200 rounded-xl p-2 text-center text-xs font-black mx-auto block outline-none focus:border-indigo-500">
+                            <input type="number" step="0.1" id="s1-${key}" oninput="calcTrend('${key}'); saveData(); checkTestingTrophies()" class="w-20 bg-slate-50 border-2 border-slate-200 focus:bg-white rounded-xl p-2.5 text-center text-xs font-black mx-auto block outline-none focus:border-whs-dark">
                         </td>
                         <td class="px-8 py-5">
-                            <input type="number" step="0.1" id="s2-${key}" oninput="calcTrend('${key}'); saveData()" class="w-16 bg-white border-2 border-slate-200 rounded-xl p-2 text-center text-xs font-black mx-auto block outline-none focus:border-indigo-500">
+                            <input type="number" step="0.1" id="s2-${key}" oninput="calcTrend('${key}'); saveData(); checkTestingTrophies()" class="w-20 bg-slate-50 border-2 border-slate-200 focus:bg-white rounded-xl p-2.5 text-center text-xs font-black mx-auto block outline-none focus:border-whs-dark">
                         </td>
                         <td class="px-8 py-5 text-center">
-                            <div id="tl-${key}" class="w-4 h-4 rounded-full bg-slate-200 mx-auto transition-all"></div>
+                            <div id="tl-${key}" class="w-5 h-5 rounded-full bg-slate-200 mx-auto border border-slate-300 shadow-inner"></div>
                         </td>
                     </tr>
                 `;
@@ -471,8 +887,8 @@
             const container = document.getElementById(`norm-container-${key}`);
             
             container.innerHTML = `
-                <span class="text-[8px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">M: ${test.norms[yKey].m}${test.unit}</span>
-                <span class="text-[8px] font-black text-pink-600 bg-pink-50 px-2 py-0.5 rounded">F: ${test.norms[yKey].f}${test.unit}</span>
+                <span class="text-[9px] font-black text-whs-dark bg-whs-light px-2.5 py-1 rounded-md">M: ${test.norms[yKey].m} ${test.unit}</span>
+                <span class="text-[9px] font-black text-pink-700 bg-pink-50 px-2.5 py-1 rounded-md border border-pink-100">F: ${test.norms[yKey].f} ${test.unit}</span>
             `;
             calcTrend(key);
         }
@@ -481,26 +897,28 @@
             const hGrid = document.getElementById('health-grid');
             const sGrid = document.getElementById('skill-grid');
             const renderCard = (key, data) => `
-                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm group">
-                    <div class="flex justify-between items-center mb-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-2xl">${data.icon}</div>
-                            <h4 class="font-black text-lg">${data.name}</h4>
+                <div class="whs-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl bg-whs-accent border border-whs-light flex items-center justify-center text-2xl">${data.icon}</div>
+                                <h4 class="font-black text-base text-whs-dark">${data.name}</h4>
+                            </div>
+                            <div id="status-${key}" class="text-xl">⚪</div>
                         </div>
-                        <div id="status-${key}" class="text-sm">⚪</div>
-                    </div>
-                    <textarea id="def-${key}" oninput="validateConcept('${key}'); saveData()" class="w-full bg-slate-50 rounded-2xl p-5 text-sm h-32 mb-4 outline-none focus:ring-2 ring-indigo-500/20" placeholder="Type your definition using the key words..."></textarea>
-                    
-                    <div id="clue-${key}" class="clue-box bg-slate-50 text-slate-800 rounded-2xl border border-slate-200">
-                        <p class="text-[9px] font-black uppercase text-indigo-600 mb-2">Example of Use</p>
-                        <p class="text-xs mb-4 italic text-slate-600">${data.example}</p>
-                        <p class="text-[9px] font-black uppercase text-indigo-600 mb-2">Mandatory Key Words</p>
-                        <div class="flex flex-wrap gap-2">
-                            ${data.keys.map(k => `<span class="bg-white px-2 py-1 rounded-lg text-[10px] font-bold border border-slate-200 shadow-sm">${k}</span>`).join('')}
+                        <textarea id="def-${key}" oninput="validateConcept('${key}'); saveData()" class="w-full bg-slate-50 focus:bg-white rounded-2xl p-4 text-xs h-28 outline-none border border-slate-200 focus:border-whs-dark" placeholder="Write your curriculum definition using the clues and key vocabulary terms..."></textarea>
+                        
+                        <div id="clue-${key}" class="clue-box bg-slate-50 text-slate-800 rounded-2xl border border-slate-200 text-xs">
+                            <p class="font-black text-whs-gold tracking-wider uppercase text-[8px] mb-1">Practical NZ Sport Example</p>
+                            <p class="mb-3 text-slate-600 italic font-medium">${data.example}</p>
+                            <p class="font-black text-whs-dark tracking-wider uppercase text-[8px] mb-1">Mandatory Vocabulary (Use 3+)</p>
+                            <div class="flex flex-wrap gap-1.5">
+                                ${data.keys.map(k => `<span class="bg-white text-whs-dark px-2 py-0.5 rounded-md border border-slate-200 font-extrabold text-[9px] shadow-sm">${k}</span>`).join('')}
+                            </div>
                         </div>
                     </div>
                     
-                    <button onclick="toggleClue('${key}')" class="w-full bg-slate-100 text-slate-600 text-[10px] font-black uppercase py-4 rounded-xl hover:bg-indigo-600 hover:text-white transition-all">Get Clue 💡</button>
+                    <button onclick="toggleClue('${key}')" class="w-full bg-whs-accent text-whs-dark text-[10px] font-black uppercase py-3 rounded-xl hover:bg-whs-dark hover:text-white transition-all mt-4 border border-whs-light">Show Scaffold Clues 💡</button>
                 </div>
             `;
             hGrid.innerHTML = Object.entries(TEST_DATA).slice(0, 4).map(([k, v]) => renderCard(k, v)).join('');
@@ -522,9 +940,59 @@
             if (isCorrect) {
                 if (status.innerText !== '✅') addXP(50);
                 status.innerText = '✅';
+                checkKnowledgeMastery();
             } else {
                 status.innerText = '⚠️';
             }
+        }
+
+        function checkKnowledgeMastery() {
+            let totalCorrect = 0;
+            Object.keys(TEST_DATA).forEach(k => {
+                const stat = document.getElementById(`status-${k}`);
+                if (stat && stat.innerText === '✅') totalCorrect++;
+            });
+            if (totalCorrect === 10) {
+                unlockTrophy('knowledge');
+            }
+        }
+
+        function validateSmartGoal() {
+            const val = document.getElementById('plan-goal').value || "";
+            const count = val.split(/\s+/).filter(Boolean).length;
+            const indicator = document.getElementById('smart-validation-status');
+            indicator.innerText = `Word Count: ${count} / 20`;
+            if (count >= 20) {
+                indicator.className = "text-xs font-bold text-emerald-600";
+                unlockTrophy('smart');
+            } else {
+                indicator.className = "text-xs font-bold text-slate-400";
+            }
+        }
+
+        function checkTestingTrophies() {
+            let baseScoreFilled = true;
+            let finalScoreFilled = true;
+            
+            Object.keys(TEST_DATA).forEach(k => {
+                const s1 = document.getElementById(`s1-${k}`).value;
+                const s2 = document.getElementById(`s2-${k}`).value;
+                if (!s1) baseScoreFilled = false;
+                if (!s2) finalScoreFilled = false;
+            });
+
+            if (baseScoreFilled) unlockTrophy('baseline');
+            if (finalScoreFilled) unlockTrophy('final');
+        }
+
+        function checkDiaryLogs() {
+            const logs = [
+                document.getElementById('lp1-reflection').value,
+                document.getElementById('lp2-reflection').value,
+                document.getElementById('lp3-reflection').value
+            ];
+            const complete = logs.every(l => l && l.length > 40);
+            if (complete) unlockTrophy('logs');
         }
 
         function calcTrend(key) {
@@ -537,15 +1005,24 @@
             const light = document.getElementById(`tl-${key}`);
             const improved = test.type === 'high' ? s2 > s1 : s2 < s1;
             
-            if (s2 === s1) light.className = 'w-4 h-4 rounded-full mx-auto bg-amber-400';
-            else if (improved) light.className = 'w-4 h-4 rounded-full mx-auto bg-emerald-500';
-            else light.className = 'w-4 h-4 rounded-full mx-auto bg-rose-500';
+            if (s2 === s1) light.className = 'w-5 h-5 rounded-full mx-auto bg-amber-400 border border-amber-500 shadow-inner';
+            else if (improved) light.className = 'w-5 h-5 rounded-full mx-auto bg-emerald-500 border border-emerald-600 shadow-inner';
+            else light.className = 'w-5 h-5 rounded-full mx-auto bg-rose-500 border border-rose-600 shadow-inner';
             updateChart();
+        }
+
+        function unlockTrophy(id) {
+            if (!state.unlockedTrophies.includes(id)) {
+                state.unlockedTrophies.push(id);
+                addXP(100);
+                renderTrophies();
+                saveData();
+            }
         }
 
         function addXP(amt) {
             state.xp += amt;
-            document.getElementById('xp-display').innerText = `${state.xp} XP`;
+            document.getElementById('xp-display').innerText = `${state.xp} Mastery XP`;
             const barWidth = Math.min((state.xp / 1000) * 100, 100);
             document.getElementById('xp-bar-inner').style.width = `${barWidth}%`;
         }
@@ -553,6 +1030,19 @@
         function nav(step) {
             document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(`step-${step}`).classList.add('active');
+            
+            // Sync top bar active styling
+            for (let i = 1; i <= 7; i++) {
+                const btn = document.getElementById(`tb-${i}`);
+                if(btn) {
+                    if(i === step) {
+                        btn.className = "px-3 py-1.5 text-[10px] font-extrabold uppercase bg-whs-dark text-white rounded-xl shadow-md";
+                    } else {
+                        btn.className = "px-3 py-1.5 text-[10px] font-extrabold uppercase hover:bg-white rounded-xl transition-all text-whs-dark";
+                    }
+                }
+            }
+
             updateMentorTip();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -563,9 +1053,13 @@
             const panel = document.querySelector('.step-panel.active');
             if(!panel) return;
             const stepNum = panel.id.split('-')[1];
-            const tip = a.tips[`t${stepNum}`] || "Keep grinding. Your results reflect your effort!";
+            
+            const tip = a.tips[`t${stepNum}`] || "Maintain progressive focus. Your physical growth values align directly to your effort intensity!";
+            const tTitle = document.getElementById('tip-title');
             const tText = document.getElementById('tip-text');
             const tIcon = document.getElementById('tip-icon');
+            
+            if(tTitle) tTitle.innerText = `Coach advice from ${a.name}:`;
             if(tText) tText.innerText = `"${tip}"`;
             if(tIcon) tIcon.innerText = a.emoji;
         }
@@ -574,30 +1068,44 @@
             const summary = document.getElementById('summary-content');
             summary.classList.remove('hidden');
             
-            document.getElementById('sum-name').innerText = document.getElementById('student-name').value || "Athlete";
-            document.getElementById('sum-xp').innerText = `${state.xp} XP`;
-            document.getElementById('sum-year-label').innerText = `Year ${state.year} Fitness Portfolio`;
+            document.getElementById('sum-name').innerText = document.getElementById('student-name').value || "Athlete Portfolio";
+            document.getElementById('sum-xp').innerText = `${state.xp} Mastery XP`;
+            document.getElementById('sum-year-label').innerText = `Year ${state.year} Portfolio`;
             
-            const a = ATHLETES.find(x => x.id === state.athlete) || { emoji: '👤', name: 'No Mentor' };
+            const a = ATHLETES.find(x => x.id === state.athlete) || { emoji: '👤', name: 'No Mentor Selected', position: 'Unselected' };
             document.getElementById('sum-avatar').innerText = a.emoji;
             document.getElementById('sum-mentor').innerText = `Mentored by ${a.name}`;
+            document.getElementById('sum-mentor-pos').innerText = a.position;
 
-            document.getElementById('sum-goal').innerText = document.getElementById('plan-goal').value || "No goal recorded.";
-            document.getElementById('sum-reflection').innerText = document.getElementById('future-goals').value || "No reflection provided.";
+            document.getElementById('sum-goal').innerText = document.getElementById('plan-goal').value || "SMART Goal not recorded.";
+            document.getElementById('sum-reflection').innerText = document.getElementById('future-goals').value || "Future targets not provided.";
 
             const improvementsDiv = document.getElementById('sum-improvements');
             improvementsDiv.innerHTML = "";
+            let counter = 0;
+            
             Object.keys(TEST_DATA).forEach(k => {
                 const s1 = document.getElementById(`s1-${k}`).value;
                 const s2 = document.getElementById(`s2-${k}`).value;
                 if (s1 && s2) {
                     const improved = document.getElementById(`tl-${k}`).classList.contains('bg-emerald-500');
                     if(improved) {
-                        improvementsDiv.innerHTML += `<div class="bg-slate-50 p-4 rounded-xl flex justify-between border-l-4 border-emerald-500 shadow-sm"><span class="text-[10px] font-black">${TEST_DATA[k].name}</span><span class="text-[10px] font-bold">${s1} ➔ ${s2}</span></div>`;
+                        counter++;
+                        improvementsDiv.innerHTML += `
+                            <div class="bg-whs-accent p-4 rounded-xl flex justify-between border-l-4 border-emerald-500 shadow-sm">
+                                <span class="text-[11px] font-black text-whs-dark uppercase">${TEST_DATA[k].name}</span>
+                                <span class="text-[11px] font-extrabold text-whs-gold">${s1} ➔ ${s2}</span>
+                            </div>
+                        `;
                     }
                 }
             });
 
+            if(counter === 0) {
+                improvementsDiv.innerHTML = `<p class="text-xs italic text-slate-400">Complete both Score 1 & Score 2 in the Performance Tracker to display physical improvements.</p>`;
+            }
+
+            unlockTrophy('recap');
             window.scrollTo({ top: summary.offsetTop - 50, behavior: 'smooth' });
         }
 
@@ -605,17 +1113,19 @@
             document.querySelectorAll('input, textarea, select').forEach(i => { 
                 if (i.id) state.inputs[i.id] = i.value; 
             });
-            localStorage.setItem('pe_workbook_v11', JSON.stringify(state));
+            checkDiaryLogs();
+            localStorage.setItem('whs_pe_workbook_v12', JSON.stringify(state));
         }
 
         function loadData() {
-            const saved = localStorage.getItem('pe_workbook_v11');
+            const saved = localStorage.getItem('whs_pe_workbook_v12');
             if (saved) {
                 const loaded = JSON.parse(saved);
                 state.year = loaded.year || 9;
                 state.athlete = loaded.athlete || null;
                 state.xp = loaded.xp || 0;
                 state.inputs = loaded.inputs || {};
+                state.unlockedTrophies = loaded.unlockedTrophies || [];
 
                 for (const [id, val] of Object.entries(state.inputs)) {
                     const el = document.getElementById(id);
@@ -624,18 +1134,27 @@
                 
                 if (state.athlete) selectAthlete(state.athlete);
                 document.getElementById('student-year').value = state.year;
+                
                 updateYearUI();
+                renderTrophies();
                 addXP(0);
-                Object.keys(TEST_DATA).forEach(k => validateConcept(k));
+                
+                Object.keys(TEST_DATA).forEach(k => {
+                    validateConcept(k);
+                    calcTrend(k);
+                });
+                validateSmartGoal();
+                syncSummaryHeader();
             }
         }
 
         function exportData() {
             saveData();
+            unlockTrophy('save');
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
             const dl = document.createElement('a');
             dl.setAttribute("href", dataStr);
-            dl.setAttribute("download", `PE_Recap_${document.getElementById('student-name').value || 'Student'}.json`);
+            dl.setAttribute("download", `WHS_PE_Recap_${document.getElementById('student-name').value || 'Student'}.json`);
             dl.click();
         }
 
@@ -644,7 +1163,7 @@
             if (!file) return;
             const reader = new FileReader();
             reader.onload = (e) => {
-                localStorage.setItem('pe_workbook_v11', e.target.result);
+                localStorage.setItem('whs_pe_workbook_v12', e.target.result);
                 location.reload();
             };
             reader.readAsText(file);
@@ -657,15 +1176,21 @@
                 data: {
                     labels: Object.values(TEST_DATA).map(d => d.name.split(' ')[0]),
                     datasets: [
-                        { label: 'Baseline', data: [], backgroundColor: '#e2e8f0', borderRadius: 6 },
-                        { label: 'Final', data: [], backgroundColor: '#4f46e5', borderRadius: 6 }
+                        { label: 'Baseline', data: [], backgroundColor: '#d1e6f6', borderRadius: 6 },
+                        { label: 'Final', data: [], backgroundColor: '#002066', borderRadius: 6 }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 9, weight: 'bold' } } } }
+                    scales: { 
+                        y: { display: false }, 
+                        x: { 
+                            grid: { display: false }, 
+                            ticks: { font: { size: 9, weight: 'bold' } } 
+                        } 
+                    }
                 }
             });
             updateChart();
