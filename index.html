@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PE Mastery | Term 3 Fitness Portfolio</title>
+    <title>Term 3 PE | Fitness & Mastery Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -11,21 +11,9 @@
         
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #fdfcfb; 
-            color: #1e293b; 
+            background-color: #f8fafc; 
+            color: #0f172a; 
             scroll-behavior: smooth; 
-        }
-
-        .athlete-card {
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid transparent;
-        }
-        .athlete-card.selected {
-            border-color: #4f46e5;
-            background: white;
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.1);
         }
 
         .step-panel { display: none; }
@@ -36,30 +24,31 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .nudge-box {
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            height: 300px;
+        }
+
+        .clue-box {
             max-height: 0;
             overflow: hidden;
             transition: all 0.4s ease-in-out;
             opacity: 0;
         }
-        .nudge-box.open { max-height: 200px; padding: 1rem; opacity: 1; margin-top: 1rem; }
+        .clue-box.open { max-height: 300px; padding: 1.5rem; opacity: 1; margin-top: 1rem; }
 
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 320px;
+        .athlete-card {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
         }
-
-        .badge-slot {
-            transition: all 0.5s ease;
-            filter: grayscale(1) opacity(0.2);
-        }
-        .badge-slot.unlocked {
-            filter: grayscale(0) opacity(1);
-            transform: scale(1.05);
+        .athlete-card.selected {
+            border-color: #4f46e5;
+            background: #eef2ff;
+            transform: translateY(-2px);
         }
 
         @media print {
@@ -73,22 +62,27 @@
 </head>
 <body class="pb-32">
 
-    <!-- HUD -->
     <header class="no-print bg-white/90 backdrop-blur-md border-b sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-4">
                 <div id="hud-year-badge" class="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-xl font-black shadow-lg">9</div>
                 <div>
                     <h1 class="text-[10px] font-black tracking-widest uppercase text-slate-400">Year <span id="hud-year-text">9</span> | <span class="text-indigo-600">Fitness Mastery</span></h1>
                     <div class="flex items-center gap-2 mt-1">
-                        <div class="w-24 md:w-48 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                            <div id="xp-bar-inner" class="h-full bg-indigo-500 w-0 transition-all duration-700"></div>
+                        <div class="w-32 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                            <div id="xp-bar-inner" class="h-full bg-amber-400 w-0 transition-all duration-700"></div>
                         </div>
-                        <span id="xp-display" class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">0 XP</span>
+                        <span id="xp-display" class="text-[9px] font-bold text-slate-500">0 XP</span>
                     </div>
                 </div>
             </div>
-            <div id="mini-badges" class="hidden md:flex gap-1 items-center bg-slate-50 px-4 py-2 rounded-full border border-slate-100"></div>
+            
+            <nav class="hidden md:flex gap-1 bg-slate-50 p-1 rounded-2xl border border-slate-100">
+                <button onclick="nav(1)" class="px-4 py-2 text-[10px] font-bold uppercase hover:bg-white rounded-xl transition-all">Profile</button>
+                <button onclick="nav(2)" class="px-4 py-2 text-[10px] font-bold uppercase hover:bg-white rounded-xl transition-all">Tracker</button>
+                <button onclick="nav(5)" class="px-4 py-2 text-[10px] font-bold uppercase hover:bg-white rounded-xl transition-all">Plan</button>
+                <button onclick="nav(7)" class="px-4 py-2 text-[10px] font-bold uppercase bg-indigo-600 text-white rounded-xl shadow-md">Turn In</button>
+            </nav>
         </div>
     </header>
 
@@ -96,54 +90,57 @@
 
         <!-- STEP 1: IDENTITY -->
         <section id="step-1" class="step-panel active">
-            <div class="mb-10 max-w-2xl">
-                <h2 class="text-4xl font-black tracking-tight text-slate-900 mb-4 italic">Step 01: Profile & <span class="text-indigo-600">Mentor</span></h2>
-                <p class="text-slate-500 font-medium leading-relaxed">Choose your high-performance mentor and set your Year Group. This will calibrate your fitness targets to the correct New Zealand standards for your age.</p>
-            </div>
-
             <div class="grid lg:grid-cols-3 gap-12">
                 <div class="lg:col-span-2 space-y-8">
+                    <div class="mb-6">
+                        <h2 class="text-4xl font-black tracking-tight text-slate-900 italic">Step 01: Profile & <span class="text-indigo-600">Year Group</span></h2>
+                        <p class="text-slate-500 font-medium mt-4">Select your mentor and set your Year Group. Year 10 students have higher fitness benchmarks than Year 9s. Don't forget to save your progress!</p>
+                    </div>
+
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="athlete-grid"></div>
 
-                    <div class="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
-                        <h3 class="text-xl font-extrabold mb-8">Athlete Profile</h3>
+                    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
                         <div class="grid md:grid-cols-2 gap-6">
                             <div class="space-y-2">
                                 <label class="text-[10px] font-bold uppercase text-slate-400 tracking-widest block px-1">Full Name</label>
-                                <input type="text" id="student-name" oninput="saveData()" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-indigo-500 outline-none transition-all font-medium" placeholder="E.g. Jamie Smith">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-bold uppercase text-slate-400 tracking-widest block px-1">Class Code</label>
-                                <input type="text" id="student-class" oninput="saveData()" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-indigo-500 outline-none transition-all font-medium" placeholder="E.g. 10PE-G2">
+                                <input type="text" id="student-name" oninput="saveData()" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-indigo-500 outline-none transition-all font-medium">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-[10px] font-bold uppercase text-slate-400 tracking-widest block px-1">Year Group</label>
                                 <select id="student-year" onchange="updateYearUI(); saveData()" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-indigo-500 outline-none transition-all font-bold">
-                                    <option value="9" selected>Year 9 (12-13yrs)</option>
+                                    <option value="9">Year 9 (12-13yrs)</option>
                                     <option value="10">Year 10 (14-15yrs)</option>
                                 </select>
                             </div>
                             <div class="space-y-2">
                                 <label class="text-[10px] font-bold uppercase text-slate-400 tracking-widest block px-1">Comparison Gender</label>
-                                <select id="student-gender" onchange="renderTracker(); saveData()" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-indigo-500 outline-none transition-all font-bold">
-                                    <option value="female" selected>Female</option>
+                                <select id="student-gender" onchange="renderTracker(); saveData()" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-indigo-500 outline-none transition-all font-bold text-indigo-600">
+                                    <option value="female">Female</option>
                                     <option value="male">Male</option>
                                 </select>
+                            </div>
+                            <div class="flex flex-col justify-end">
+                                <button onclick="nav(2)" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-slate-900 transition-all">Begin Testing ➔</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="space-y-6">
-                    <div id="mentor-display-card" class="bg-slate-900 rounded-[3rem] p-10 text-white text-center shadow-2xl relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-6 opacity-10 text-7xl select-none">🇳🇿</div>
-                        <div id="avatar-preview" class="text-8xl mb-6 relative z-10">👤</div>
-                        <h3 id="avatar-name" class="text-2xl font-black relative z-10 leading-none">Choose Mentor</h3>
-                        <p id="avatar-trait" class="text-[10px] uppercase tracking-widest text-indigo-400 mt-4 font-bold relative z-10 bg-white/5 py-2 rounded-lg italic">Select above to start</p>
+                    <div id="persistence-box" class="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-xl">
+                        <h3 class="font-black text-lg mb-2">💾 Portable Save</h3>
+                        <p class="text-slate-400 text-[10px] leading-relaxed mb-6 uppercase font-bold">Moving computers? Download your data now and upload it in your next lesson.</p>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="exportData()" class="bg-white/10 hover:bg-white/20 p-3 rounded-xl text-[10px] font-black uppercase border border-white/10 transition-all">Download</button>
+                            <label class="bg-indigo-600 hover:bg-indigo-500 p-3 rounded-xl text-[10px] font-black uppercase text-center cursor-pointer transition-all">
+                                Upload <input type="file" class="hidden" id="file-input" onchange="importData(event)">
+                            </label>
+                        </div>
                     </div>
-                    <div class="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm">
-                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-8 text-center">Mastery Trophies</h3>
-                        <div id="trophy-grid" class="grid grid-cols-4 gap-4"></div>
+                    <div class="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm text-center">
+                        <div id="avatar-preview" class="text-8xl mb-4">👤</div>
+                        <h4 id="avatar-name" class="font-black text-xl">Choose Mentor</h4>
+                        <p id="avatar-trait" class="text-[10px] uppercase font-bold text-indigo-500 mt-2">Mentor Selection Required</p>
                     </div>
                 </div>
             </div>
@@ -151,105 +148,99 @@
 
         <!-- STEP 2: TRACKER -->
         <section id="step-2" class="step-panel space-y-8">
-            <div class="mb-6 max-w-2xl">
-                <h2 class="text-4xl font-black tracking-tight text-slate-900 italic">Step 02: Performance <span class="text-indigo-600">Tracker</span></h2>
-                <p class="text-slate-500 font-medium leading-relaxed mt-4">Select your specific test for each component. Benchmarks adjust automatically for Year 9 vs Year 10. Record your baseline and final scores.</p>
-            </div>
-
-            <div id="mentor-corner" class="bg-indigo-50 border border-indigo-100 rounded-[2.5rem] p-8 flex gap-6 items-center">
-                <div class="text-5xl bg-white w-20 h-20 rounded-3xl flex items-center justify-center shadow-sm" id="tip-icon">🏅</div>
-                <div class="flex-grow">
-                    <h4 class="font-black text-indigo-900 text-xs uppercase tracking-widest">Mentor Advice</h4>
-                    <p class="text-indigo-700/80 text-sm font-semibold mt-1 leading-relaxed italic" id="tip-text">"Your baseline is just the beginning. Focus on the process!"</p>
+            <div class="mb-6 flex flex-col md:flex-row justify-between items-end gap-6">
+                <div class="max-w-2xl">
+                    <h2 class="text-4xl font-black tracking-tight text-slate-900 italic">Step 02: Performance <span class="text-indigo-600">Tracker</span></h2>
+                    <p class="text-slate-500 font-medium mt-4">Select your test for each component. Benchmarks adjust automatically based on your Year and Gender. Aim for the green light!</p>
+                </div>
+                <div class="bg-slate-900 text-white px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest">
+                    Target: Year <span id="tracker-year-val">9</span> Average
                 </div>
             </div>
 
-            <div class="bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden shadow-sm overflow-x-auto">
-                <table class="w-full text-left min-w-[900px]">
-                    <thead class="bg-slate-50 border-b border-slate-100">
+            <div class="bg-white border border-slate-200 rounded-[2.5rem] overflow-hidden shadow-sm overflow-x-auto">
+                <table class="w-full text-left min-w-[950px]">
+                    <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
                             <th class="px-8 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Component</th>
                             <th class="px-8 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Select Test</th>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Avg Benchmark</th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">NZ Avg Benchmark</th>
                             <th class="px-8 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Score 1</th>
                             <th class="px-8 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Score 2</th>
                             <th class="px-8 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Trend</th>
                         </tr>
                     </thead>
-                    <tbody id="tracker-body" class="divide-y divide-slate-50"></tbody>
+                    <tbody id="tracker-body" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
 
             <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm">
-                    <h4 class="font-black text-xl mb-8 flex justify-between items-center text-slate-800">Visual Growth <span class="text-[9px] bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full">Chart View</span></h4>
+                <div class="bg-white p-10 rounded-[3rem] border border-slate-200 shadow-sm">
+                    <h4 class="font-black text-xl mb-8 flex justify-between items-center text-slate-800 italic">Physical Growth <span class="text-[9px] bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full uppercase tracking-tighter">Term 3 Progress</span></h4>
                     <div class="chart-container">
                         <canvas id="fitnessChart"></canvas>
                     </div>
                 </div>
-                <div class="bg-slate-900 text-white p-10 rounded-[3rem] flex flex-col justify-center relative overflow-hidden">
-                    <h4 class="font-black text-xl mb-2">Trend Reflection</h4>
-                    <p class="text-slate-400 text-xs mb-8 leading-relaxed">Briefly explain your results. Why did certain components improve more than others?</p>
-                    <textarea id="trend-analysis" oninput="saveData()" class="w-full h-48 bg-white/5 border border-white/10 rounded-2xl p-6 text-sm outline-none focus:border-indigo-500 transition-all" placeholder="I noticed my cardiovascular endurance increased because..."></textarea>
+                <div id="mentor-advice" class="bg-slate-900 text-white p-10 rounded-[3rem] relative overflow-hidden flex flex-col justify-center">
+                    <div class="text-5xl opacity-20 absolute -right-4 -bottom-4" id="tip-icon">🏅</div>
+                    <h4 class="text-indigo-400 text-xs font-black uppercase tracking-widest mb-4">Mentor Tip</h4>
+                    <p id="tip-text" class="text-lg font-bold italic leading-relaxed">"Select an athlete in the Profile tab to receive specialized training advice!"</p>
                 </div>
             </div>
         </section>
 
-        <!-- STEP 3: HEALTH -->
+        <!-- STEP 3: HEALTH LITERACY -->
         <section id="step-3" class="step-panel space-y-8">
-            <div class="mb-10 max-w-2xl">
+            <div class="max-w-2xl">
                 <h2 class="text-4xl font-black tracking-tight text-slate-900 italic">Step 03: Health <span class="text-indigo-600">Literacy</span></h2>
-                <p class="text-slate-500 font-medium mt-4">Define these Health-Related components. Use the verify button for feedback from the teacher nudge system.</p>
+                <p class="text-slate-500 font-medium mt-4">Define these 4 Health-Related components. Use the "Get Clue" button if you're stuck—it will show you where it's used and the key words you need.</p>
             </div>
             <div class="grid md:grid-cols-2 gap-8" id="health-grid"></div>
         </section>
 
-        <!-- STEP 4: SKILL -->
+        <!-- STEP 4: SKILL MATRIX -->
         <section id="step-4" class="step-panel space-y-8">
-            <div class="mb-10 max-w-2xl">
+             <div class="max-w-2xl">
                 <h2 class="text-4xl font-black tracking-tight text-slate-900 italic">Step 04: Skill <span class="text-indigo-600">Matrix</span></h2>
-                <p class="text-slate-500 font-medium mt-4">Skill-related components are about performance efficiency and muscular power. How do these help you in your sport?</p>
+                <p class="text-slate-500 font-medium mt-4">Skill-related components focus on efficiency. How do these traits help you in sport? Check the clues for sport scenarios!</p>
             </div>
             <div class="grid md:grid-cols-2 gap-8" id="skill-grid"></div>
         </section>
 
-        <!-- STEP 5: TRAINING PLAN -->
+        <!-- STEP 5: ACTION BLUEPRINT -->
         <section id="step-5" class="step-panel space-y-8">
-            <div class="mb-10 max-w-2xl">
+            <div class="max-w-2xl">
                 <h2 class="text-4xl font-black tracking-tight text-slate-900 italic">Step 05: Action <span class="text-indigo-600">Blueprint</span></h2>
-                <p class="text-slate-500 font-medium mt-4">Design a training cycle using Methods (MOT) and Principles (POT) of Training.</p>
+                <p class="text-slate-500 font-medium mt-4">Design your training cycle. Explain your goals and how Methods (MOT) and Principles (POT) help you achieve them.</p>
             </div>
             <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
-                    <h3 class="font-black mb-1">SMART Goal</h3>
-                    <p class="text-[9px] text-slate-400 mb-6 uppercase">Specific & Timed</p>
-                    <textarea id="plan-goal" oninput="saveData()" class="w-full h-36 bg-slate-50 rounded-2xl p-4 text-sm" placeholder="I want to improve my beep test score to..."></textarea>
+                <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-black text-indigo-600 uppercase text-xs tracking-widest">SMART Goal</h3>
+                    <textarea id="plan-goal" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-xl p-4 text-sm outline-none focus:ring-2 ring-indigo-500/20" placeholder="I want to improve my cardiovascular endurance by..."></textarea>
                 </div>
-                <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
-                    <h3 class="font-black mb-1">Method (MOT)</h3>
-                    <p class="text-[9px] text-slate-400 mb-6 uppercase">The Training Type</p>
-                    <textarea id="plan-mot" oninput="saveData()" class="w-full h-36 bg-slate-50 rounded-2xl p-4 text-sm" placeholder="Resistance training involves..."></textarea>
+                <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-black text-indigo-600 uppercase text-xs tracking-widest">Method (MOT)</h3>
+                    <textarea id="plan-mot" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-xl p-4 text-sm outline-none focus:ring-2 ring-indigo-500/20" placeholder="Continuous Training, Circuit, Plyometrics..."></textarea>
                 </div>
-                <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
-                    <h3 class="font-black mb-1">Principle (POT)</h3>
-                    <p class="text-[9px] text-slate-400 mb-6 uppercase">Progressive Overload</p>
-                    <textarea id="plan-pot" oninput="saveData()" class="w-full h-36 bg-slate-50 rounded-2xl p-4 text-sm" placeholder="I will overload by adding..."></textarea>
+                <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-black text-indigo-600 uppercase text-xs tracking-widest">Principle (POT)</h3>
+                    <textarea id="plan-pot" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-xl p-4 text-sm outline-none focus:ring-2 ring-indigo-500/20" placeholder="Specificity, Overload, Progression..."></textarea>
                 </div>
             </div>
-            <div class="bg-white border border-slate-100 rounded-[2.5rem] p-10">
-                <h3 class="text-xl font-black mb-8 text-center uppercase tracking-widest text-xs">Practical Lesson Log</h3>
+            <div class="bg-slate-900 text-white p-10 rounded-[3rem]">
+                <h3 class="text-xl font-black mb-8 text-center uppercase tracking-widest text-xs text-indigo-400">Practical Lesson Log</h3>
                 <div class="grid md:grid-cols-3 gap-8">
                     <div class="space-y-4">
-                        <span class="text-[9px] font-black bg-indigo-600 text-white px-5 py-2 rounded-full">Lesson 1</span>
-                        <textarea id="lp1" oninput="saveData()" class="w-full h-40 bg-slate-50 rounded-2xl p-4 text-sm"></textarea>
+                        <span class="text-[9px] font-black bg-indigo-600 text-white px-5 py-2 rounded-full">Lesson 1 Diary</span>
+                        <textarea id="lp1" oninput="saveData()" class="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm outline-none focus:border-indigo-500"></textarea>
                     </div>
                     <div class="space-y-4">
-                        <span class="text-[9px] font-black bg-indigo-600 text-white px-5 py-2 rounded-full">Lesson 2</span>
-                        <textarea id="lp2" oninput="saveData()" class="w-full h-40 bg-slate-50 rounded-2xl p-4 text-sm"></textarea>
+                        <span class="text-[9px] font-black bg-indigo-600 text-white px-5 py-2 rounded-full">Lesson 2 Diary</span>
+                        <textarea id="lp2" oninput="saveData()" class="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm outline-none focus:border-indigo-500"></textarea>
                     </div>
                     <div class="space-y-4">
-                        <span class="text-[9px] font-black bg-indigo-600 text-white px-5 py-2 rounded-full">Lesson 3</span>
-                        <textarea id="lp3" oninput="saveData()" class="w-full h-40 bg-slate-50 rounded-2xl p-4 text-sm"></textarea>
+                        <span class="text-[9px] font-black bg-indigo-600 text-white px-5 py-2 rounded-full">Lesson 3 Diary</span>
+                        <textarea id="lp3" oninput="saveData()" class="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm outline-none focus:border-indigo-500"></textarea>
                     </div>
                 </div>
             </div>
@@ -257,22 +248,18 @@
 
         <!-- STEP 6: REFLECTION -->
         <section id="step-6" class="step-panel space-y-8">
-             <div class="mb-10 max-w-2xl">
+            <div class="max-w-2xl">
                 <h2 class="text-4xl font-black tracking-tight text-slate-900 italic">Step 06: Review & <span class="text-indigo-600">Reflection</span></h2>
-                <p class="text-slate-500 font-medium mt-4">Look back at your results. What are the reasons for your physical changes?</p>
+                <p class="text-slate-500 font-medium mt-4">Analyze your results. Use the Traffic Light colors from your Tracker to help explain your growth this term.</p>
             </div>
             <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm space-y-6">
                     <h3 class="text-xl font-black">Future Aspirations</h3>
-                    <div class="space-y-4">
-                        <label class="text-[10px] font-bold uppercase text-slate-400 tracking-widest block">Goals for the rest of the year</label>
-                        <textarea id="future-goals" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-2xl p-4 text-sm" placeholder="I plan to keep training my..."></textarea>
-                    </div>
+                    <textarea id="future-goals" oninput="saveData()" class="w-full h-32 bg-slate-50 rounded-2xl p-4 text-sm" placeholder="I plan to keep training my..."></textarea>
                 </div>
                 <div class="bg-slate-900 text-white p-8 rounded-[2.5rem] space-y-6">
-                    <h3 class="text-xl font-black text-indigo-400">Extracurricular Activity</h3>
-                    <p class="text-slate-400 text-xs">How much activity do you do outside of PE?</p>
-                    <textarea id="extra-activity" oninput="saveData()" class="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm text-slate-200 outline-none" placeholder="I play for the school team and..."></textarea>
+                    <h3 class="text-xl font-black text-indigo-400">Extracurricular Log</h3>
+                    <textarea id="extra-activity" oninput="saveData()" class="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm text-slate-200 outline-none" placeholder="Outside of PE I play for..."></textarea>
                 </div>
             </div>
         </section>
@@ -281,18 +268,18 @@
         <section id="step-7" class="step-panel space-y-12">
             <div class="text-center no-print">
                 <h2 class="text-5xl font-black italic">Term 3 Fitness Recap</h2>
-                <p class="text-slate-500 max-w-xl mx-auto mt-4">Verify your data below. Click to generate your final Portfolio report card for assessment.</p>
-                <button onclick="generateSummary()" class="mt-10 bg-indigo-600 text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl hover:scale-105 transition-all">Compile Report Card</button>
+                <p class="text-slate-500 max-w-xl mx-auto mt-4 italic">Confirm all data is correct. Once generated, this summary becomes your final assessment submission.</p>
+                <button onclick="generateSummary()" class="mt-10 bg-indigo-600 text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl hover:scale-105 transition-all">Compile Report Card ➔</button>
             </div>
 
-            <div id="summary-content" class="summary-page bg-white p-12 rounded-[3.5rem] border-2 border-slate-100 shadow-2xl relative overflow-hidden hidden">
+            <div id="summary-content" class="summary-page bg-white p-12 rounded-[3.5rem] border-2 border-slate-200 shadow-2xl relative overflow-hidden hidden">
                 <div class="flex flex-col md:flex-row justify-between items-start border-b pb-12 mb-12">
                     <div>
                         <p class="text-[10px] font-black uppercase text-indigo-600 tracking-widest">HPE Term 3 Assessment Portfolio</p>
                         <h3 id="sum-name" class="text-5xl font-black text-slate-900 uppercase">Student Name</h3>
                         <div class="flex gap-4 mt-6">
                             <span id="sum-year-label" class="bg-slate-900 text-white px-5 py-2 rounded-xl text-xs font-black">Year 9 Portfolio</span>
-                            <span id="sum-xp" class="bg-amber-400 text-amber-900 px-5 py-2 rounded-xl text-xs font-black italic">0 XP Master</span>
+                            <span id="sum-xp" class="bg-amber-400 text-amber-900 px-5 py-2 rounded-xl text-xs font-black italic">0 XP</span>
                         </div>
                     </div>
                     <div class="text-right">
@@ -303,18 +290,18 @@
 
                 <div class="grid md:grid-cols-2 gap-16">
                     <div>
-                        <h4 class="text-xs font-black uppercase tracking-widest text-indigo-500 mb-8 border-b pb-2">Testing Highlights</h4>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-indigo-500 mb-8 border-b pb-2">Top Performance Gains</h4>
                         <div id="sum-improvements" class="space-y-4"></div>
                     </div>
                     <div>
-                        <h4 class="text-xs font-black uppercase tracking-widest text-indigo-500 mb-8 border-b pb-2">Strategy & Plan</h4>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-indigo-500 mb-8 border-b pb-2">Training Outcome</h4>
                         <div class="space-y-6">
                             <div class="bg-slate-50 p-6 rounded-2xl">
-                                <span class="text-[8px] font-black text-slate-400 uppercase">Primary Training Goal</span>
+                                <span class="text-[8px] font-black text-slate-400 uppercase">SMART Goal Statement</span>
                                 <p id="sum-goal" class="text-xs mt-2 italic font-medium"></p>
                             </div>
                             <div class="bg-slate-900 text-white p-6 rounded-2xl">
-                                <span class="text-[8px] font-black text-slate-500 uppercase">Outcome Reflection</span>
+                                <span class="text-[8px] font-black text-slate-500 uppercase">Final Future Goals</span>
                                 <p id="sum-reflection" class="text-xs mt-2 text-slate-300"></p>
                             </div>
                         </div>
@@ -322,90 +309,81 @@
                 </div>
 
                 <div class="mt-20 pt-10 border-t flex justify-between items-center no-print">
-                    <p class="text-[9px] text-slate-400 italic">Term 3 PE Recap Portfolio</p>
-                    <button onclick="window.print()" class="bg-slate-900 text-white px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest">Print / Export PDF</button>
+                    <p class="text-[9px] text-slate-400 italic font-bold">Generated via the Mastery Workbook Engine.</p>
+                    <button onclick="window.print()" class="bg-slate-900 text-white px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg">Print to PDF</button>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- NAV -->
-    <nav class="no-print fixed bottom-8 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-xl border border-slate-100 py-3 px-3 rounded-[2.5rem] z-50 shadow-2xl flex gap-1">
+    <nav class="no-print fixed bottom-8 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-xl border border-slate-200 py-3 px-3 rounded-[2.5rem] z-50 shadow-2xl flex gap-1">
         <button onclick="nav(1)" id="nb-1" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Identity">👤</button>
         <button onclick="nav(2)" id="nb-2" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Tracker">📊</button>
         <button onclick="nav(3)" id="nb-3" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Health">🫀</button>
         <button onclick="nav(4)" id="nb-4" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Skills">⚡</button>
         <button onclick="nav(5)" id="nb-5" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Plan">🏗️</button>
-        <button onclick="nav(6)" id="nb-6" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Reflect">🧗</button>
+        <button onclick="nav(6)" id="nb-6" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Reflect">📈</button>
         <button onclick="nav(7)" id="nb-7" class="w-14 h-14 flex items-center justify-center rounded-full transition-all text-xl" title="Recap">🏁</button>
     </nav>
 
     <script>
         const ATHLETES = [
-            { id: 'savea', name: 'Ardie Savea', sport: 'Rugby', emoji: '🏉', tips: { t2: "Strength isn't built in a day. It's about being 1% better every lesson.", t5: "Overload is my secret. Keep adding weight as you get stronger!" } },
-            { id: 'carrington', name: 'Lisa Carrington', sport: 'Kayaking', emoji: '🛶', tips: { t2: "Pacing is key for endurance. Don't blow all your energy in the first shuttle!", t5: "Specific training builds the specific muscles you need to win." } },
-            { id: 'adams_v', name: 'Valerie Adams', sport: 'Athletics', emoji: '☄️', tips: { t2: "Focus on explosive power. 1RM requires total concentration.", t5: "Consistency is better than intensity. Show up for every lesson." } },
-            { id: 'adams_s', name: 'Steven Adams', sport: 'Basketball', emoji: '🏀', tips: { t2: "Height is a gift, agility is a choice. Work on those footwork drills!", t5: "Goals must be SMART. If they aren't timed, they aren't real." } },
-            { id: 'nweke', name: 'Grace Nweke', sport: 'Netball', emoji: '🏐', tips: { t2: "Vertical muscular power is vital for rebounders. Explode upwards!", t5: "Rest is as important as training. Give your muscles time to grow." } },
-            { id: 'williamson', name: 'Kane Williamson', sport: 'Cricket', emoji: '🏏', tips: { t2: "Coordination is about focus. Watch the ball all the way into your hands.", t5: "A good plan allows for adjustments. Don't be afraid to pivot." } }
+            { id: 'savea', name: 'Ardie Savea', sport: 'Rugby', emoji: '🏉', tips: { t2: "Strength is built in the weights room. Note every kg.", t5: "Specific strength training makes my leg drives powerful." } },
+            { id: 'carrington', name: 'Lisa Carrington', sport: 'Kayaking', emoji: '🛶', tips: { t2: "Cardiovascular endurance is engine room of kayaking.", t5: "I use continuous training to keep my paddle rate high." } },
+            { id: 'adams_v', name: 'Valerie Adams', sport: 'Shot Put', emoji: '☄️', tips: { t2: "Explosive power starts with a strong core base.", t5: "Plyometrics are my method of choice for explosive throwing." } },
+            { id: 'adams_s', name: 'Steven Adams', sport: 'Basketball', emoji: '🏀', tips: { t2: "Agility keeps me mobile under the hoop. Practice the T-Test!", t5: "Overload your drills to stay ahead of the defenders." } },
+            { id: 'nweke', name: 'Grace Nweke', sport: 'Netball', emoji: '🏐', tips: { t2: "Vertical jump power wins rebounds. Work those legs!", t5: "My plan focuses on jump height through explosive methods." } },
+            { id: 'williamson', name: 'Kane Williamson', sport: 'Cricket', emoji: '🏏', tips: { t2: "Reaction time is the difference between a 4 and a duck.", t5: "A SMART goal keeps my batting drills focused." } }
         ];
 
         const TEST_DATA = {
-            cvf: { name: 'Cardiovascular Endurance', icon: '🫀', keys: ['heart', 'lung', 'oxygen', 'aerobic', 'repeatedly'], hint: 'How well your heart and lungs use oxygen during long exercise.', tests: [
+            cvf: { name: 'Cardiovascular Endurance', icon: '🫀', keys: ['oxygen', 'heart', 'lungs', 'long', 'aerobic'], example: 'Running the Beep Test or 12-minute run.', tests: [
                 { id: 'cv1', name: '12 Min Run', unit: 'm', type: 'high', norms: { y9: { m: 2200, f: 1950 }, y10: { m: 2400, f: 2100 } } },
                 { id: 'cv2', name: 'Beep Test', unit: 'lvl', type: 'high', norms: { y9: { m: 7.8, f: 6.5 }, y10: { m: 8.5, f: 7.1 } } },
                 { id: 'cv3', name: '2.4km Run', unit: 'min', type: 'low', norms: { y9: { m: 12.0, f: 13.5 }, y10: { m: 11.0, f: 12.5 } } }
             ]},
-            mstr: { name: 'Muscular Strength', icon: '💪', keys: ['maximum', 'force', 'single', 'one'], hint: 'The maximum force you can apply in a single effort.', tests: [
+            mstr: { name: 'Muscular Strength', icon: '💪', keys: ['maximum', 'force', 'single', 'one'], example: 'A 1RM Squat or opening a heavy door.', tests: [
                 { id: 'st1', name: 'Grip Test', unit: 'kg', type: 'high', norms: { y9: { m: 28, f: 22 }, y10: { m: 35, f: 26 } } },
                 { id: 'st2', name: '1RM Test', unit: 'kg', type: 'high', norms: { y9: { m: 45, f: 30 }, y10: { m: 55, f: 40 } } }
             ]},
-            mend: { name: 'Muscular Endurance', icon: '🔋', keys: ['repeatedly', 'fatigue', 'time', 'long'], hint: 'Using muscles repeatedly without getting tired.', tests: [
+            mend: { name: 'Muscular Endurance', icon: '🔋', keys: ['repeatedly', 'fatigue', 'time', 'long'], example: 'Performing 50 sit-ups or rowing 2km.', tests: [
                 { id: 'en1', name: 'Sit Ups (1m)', unit: 'reps', type: 'high', norms: { y9: { m: 35, f: 30 }, y10: { m: 40, f: 34 } } },
                 { id: 'en2', name: 'Push Up Max', unit: 'reps', type: 'high', norms: { y9: { m: 20, f: 15 }, y10: { m: 25, f: 18 } } },
                 { id: 'en3', name: 'Plank Hold', unit: 'sec', type: 'high', norms: { y9: { m: 60, f: 60 }, y10: { m: 80, f: 80 } } }
             ]},
-            flex: { name: 'Flexibility', icon: '🧘', keys: ['range', 'joint', 'motion', 'stretch'], hint: 'The range of motion around a joint.', tests: [
+            flex: { name: 'Flexibility', icon: '🧘', keys: ['range', 'joint', 'motion', 'stretch'], example: 'Doing splits or reaching for a ball in tennis.', tests: [
                 { id: 'fl1', name: 'Sit & Reach', unit: 'cm', type: 'high', norms: { y9: { m: 5, f: 9 }, y10: { m: 7, f: 12 } } },
                 { id: 'fl2', name: 'Shoulder Test', unit: 'cm', type: 'low', norms: { y9: { m: 5, f: 3 }, y10: { m: 4, f: 2 } } }
             ]},
-            agi: { name: 'Agility', icon: '⚡', keys: ['direction', 'quickly', 'change', 'control'], hint: 'Changing direction quickly and with control.', tests: [
+            agi: { name: 'Agility', icon: '⚡', keys: ['direction', 'quickly', 'change', 'control'], example: 'Sidestepping a defender in rugby or netball.', tests: [
                 { id: 'ag1', name: 'Illinois Run', unit: 'sec', type: 'low', norms: { y9: { m: 18.2, f: 20.1 }, y10: { m: 17.5, f: 19.2 } } },
                 { id: 'ag2', name: 'T-Test', unit: 'sec', type: 'low', norms: { y9: { m: 11.5, f: 12.8 }, y10: { m: 10.8, f: 11.9 } } }
             ]},
-            bal: { name: 'Balance', icon: '🤸', keys: ['stable', 'gravity', 'still', 'upright'], hint: 'Maintaining stability while stationary or moving.', tests: [
+            bal: { name: 'Balance', icon: '🤸', keys: ['stable', 'gravity', 'still', 'upright'], example: 'A gymnast holding a handstand or beam walk.', tests: [
                 { id: 'ba1', name: 'Stork Stand', unit: 'sec', type: 'high', norms: { y9: { m: 15, f: 15 }, y10: { m: 20, f: 20 } } }
             ]},
-            pow: { name: 'Muscular Power', icon: '💥', keys: ['speed', 'strength', 'burst', 'explosive'], hint: 'Combining strength and speed for explosive movement.', tests: [
+            pow: { name: 'Muscular Power', icon: '💥', keys: ['speed', 'strength', 'burst', 'explosive'], example: 'An explosive vertical jump to win a rebound.', tests: [
                 { id: 'po1', name: 'Broad Jump', unit: 'm', type: 'high', norms: { y9: { m: 1.8, f: 1.6 }, y10: { m: 2.1, f: 1.8 } } },
                 { id: 'po2', name: 'Vertical Jump', unit: 'cm', type: 'high', norms: { y9: { m: 35, f: 30 }, y10: { m: 42, f: 35 } } }
             ]},
-            spe: { name: 'Speed', icon: '🏃', keys: ['distance', 'time', 'fastest', 'velocity'], hint: 'Covering a distance in the shortest time possible.', tests: [
+            spe: { name: 'Speed', icon: '🏃', keys: ['distance', 'time', 'fastest', 'velocity'], example: 'Usain Bolt running 100m in world record time.', tests: [
                 { id: 'sp1', name: '30m Sprint', unit: 'sec', type: 'low', norms: { y9: { m: 5.2, f: 5.8 }, y10: { m: 4.9, f: 5.5 } } }
             ]},
-            rea: { name: 'Reaction Time', icon: '⏱️', keys: ['stimulus', 'signal', 'respond', 'time'], hint: 'How fast you respond to a signal or stimulus.', tests: [
-                { id: 're1', name: 'Online Clicker', unit: 'ms', type: 'low', norms: { y9: { m: 350, f: 350 }, y10: { m: 300, f: 300 } } },
+            rea: { name: 'Reaction Time', icon: '⏱️', keys: ['stimulus', 'signal', 'respond', 'time'], example: 'A goalkeeper reacting to a shot on goal.', tests: [
+                { id: 're1', name: 'Online Click', unit: 'ms', type: 'low', norms: { y9: { m: 350, f: 350 }, y10: { m: 300, f: 300 } } },
                 { id: 're2', name: 'Ruler Drop', unit: 'cm', type: 'low', norms: { y9: { m: 18, f: 20 }, y10: { m: 16, f: 18 } } }
             ]},
-            coo: { name: 'Coordination', icon: '🎾', keys: ['parts', 'together', 'senses', 'smoothly'], hint: 'Using senses and body parts together accurately.', tests: [
+            coo: { name: 'Coordination', icon: '🎾', keys: ['parts', 'together', 'senses', 'smoothly'], example: 'Juggling or hitting a fast cricket ball.', tests: [
                 { id: 'co1', name: 'Wall Toss', unit: 'reps', type: 'high', norms: { y9: { m: 15, f: 15 }, y10: { m: 20, f: 20 } } }
             ] }
         };
 
-        const BADGES = [
-            { id: 'b_identity', name: 'Athlete', icon: '🤝' },
-            { id: 'b_data', name: 'Tracker', icon: '📊' },
-            { id: 'b_knowledge', name: 'Professor', icon: '🎓' },
-            { id: 'b_plan', name: 'Architect', icon: '🏗️' }
-        ];
-
-        let state = { xp: 0, athlete: null, inputs: {}, badges: [], year: 9 };
+        let state = { xp: 0, athlete: null, inputs: {}, year: 9 };
         let fitnessChart = null;
 
         function init() {
             renderAthletes();
-            renderTrophyRoom();
             renderTracker();
             renderKnowledge();
             loadData();
@@ -416,7 +394,7 @@
         function renderAthletes() {
             const grid = document.getElementById('athlete-grid');
             grid.innerHTML = ATHLETES.map(a => `
-                <div onclick="selectAthlete('${a.id}')" id="ath-${a.id}" class="athlete-card bg-white p-6 rounded-[2rem] text-center border border-slate-100 shadow-sm hover:shadow-md group">
+                <div onclick="selectAthlete('${a.id}')" id="ath-${a.id}" class="athlete-card bg-white p-6 rounded-[2rem] text-center border border-slate-200 shadow-sm hover:shadow-md group">
                     <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">${a.emoji}</div>
                     <div class="text-[10px] font-black uppercase text-slate-900">${a.name}</div>
                     <div class="text-[8px] text-indigo-500 font-bold uppercase">${a.sport}</div>
@@ -427,20 +405,21 @@
         function selectAthlete(id) {
             state.athlete = id;
             document.querySelectorAll('.athlete-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById(`ath-${id}`).classList.add('selected');
+            const el = document.getElementById(`ath-${id}`);
+            if(el) el.classList.add('selected');
             const a = ATHLETES.find(x => x.id === id);
             document.getElementById('avatar-preview').innerText = a.emoji;
             document.getElementById('avatar-name').innerText = a.name;
             document.getElementById('avatar-trait').innerText = `Mentored by ${a.name}`;
-            unlockBadge('b_identity');
-            saveData();
             updateMentorTip();
+            saveData();
         }
 
         function updateYearUI() {
             state.year = document.getElementById('student-year').value;
             document.getElementById('hud-year-badge').innerText = state.year;
             document.getElementById('hud-year-text').innerText = state.year;
+            document.getElementById('tracker-year-val').innerText = state.year;
             renderTracker();
             updateChart();
         }
@@ -464,10 +443,10 @@
                             <div id="norm-container-${key}" class="flex flex-col gap-1 items-center"></div>
                         </td>
                         <td class="px-8 py-5">
-                            <input type="number" id="s1-${key}" oninput="calcTrend('${key}'); addXP(2); saveData()" class="w-16 bg-white border-2 border-slate-100 rounded-xl p-2 text-center text-xs font-black mx-auto block">
+                            <input type="number" step="0.1" id="s1-${key}" oninput="calcTrend('${key}'); saveData()" class="w-16 bg-white border-2 border-slate-200 rounded-xl p-2 text-center text-xs font-black mx-auto block outline-none focus:border-indigo-500">
                         </td>
                         <td class="px-8 py-5">
-                            <input type="number" id="s2-${key}" oninput="calcTrend('${key}'); addXP(2); saveData()" class="w-16 bg-white border-2 border-slate-100 rounded-xl p-2 text-center text-xs font-black mx-auto block">
+                            <input type="number" step="0.1" id="s2-${key}" oninput="calcTrend('${key}'); saveData()" class="w-16 bg-white border-2 border-slate-200 rounded-xl p-2 text-center text-xs font-black mx-auto block outline-none focus:border-indigo-500">
                         </td>
                         <td class="px-8 py-5 text-center">
                             <div id="tl-${key}" class="w-4 h-4 rounded-full bg-slate-200 mx-auto transition-all"></div>
@@ -475,7 +454,14 @@
                     </tr>
                 `;
             }).join('');
-            Object.keys(TEST_DATA).forEach(k => updateNorms(k));
+            
+            Object.keys(TEST_DATA).forEach(k => {
+                if (state.inputs[`sel-${k}`]) document.getElementById(`sel-${k}`).value = state.inputs[`sel-${k}`];
+                if (state.inputs[`s1-${k}`]) document.getElementById(`s1-${k}`).value = state.inputs[`s1-${k}`];
+                if (state.inputs[`s2-${k}`]) document.getElementById(`s2-${k}`).value = state.inputs[`s2-${k}`];
+                updateNorms(k);
+                calcTrend(k);
+            });
         }
 
         function updateNorms(key) {
@@ -495,7 +481,7 @@
             const hGrid = document.getElementById('health-grid');
             const sGrid = document.getElementById('skill-grid');
             const renderCard = (key, data) => `
-                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm group">
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm group">
                     <div class="flex justify-between items-center mb-6">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-2xl">${data.icon}</div>
@@ -503,34 +489,42 @@
                         </div>
                         <div id="status-${key}" class="text-sm">⚪</div>
                     </div>
-                    <textarea id="def-${key}" oninput="saveData()" class="w-full bg-slate-50 rounded-2xl p-5 text-sm h-32 mb-4 outline-none" placeholder="Explain the concept..."></textarea>
-                    <div id="nudge-${key}" class="nudge-box bg-indigo-50 text-xs text-indigo-800 rounded-xl font-bold border border-indigo-100">
-                        <span class="block uppercase text-[8px] mb-1">Teacher Nudge:</span> ${data.hint}
+                    <textarea id="def-${key}" oninput="validateConcept('${key}'); saveData()" class="w-full bg-slate-50 rounded-2xl p-5 text-sm h-32 mb-4 outline-none focus:ring-2 ring-indigo-500/20" placeholder="Type your definition using the key words..."></textarea>
+                    
+                    <div id="clue-${key}" class="clue-box bg-slate-50 text-slate-800 rounded-2xl border border-slate-200">
+                        <p class="text-[9px] font-black uppercase text-indigo-600 mb-2">Example of Use</p>
+                        <p class="text-xs mb-4 italic text-slate-600">${data.example}</p>
+                        <p class="text-[9px] font-black uppercase text-indigo-600 mb-2">Mandatory Key Words</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${data.keys.map(k => `<span class="bg-white px-2 py-1 rounded-lg text-[10px] font-bold border border-slate-200 shadow-sm">${k}</span>`).join('')}
+                        </div>
                     </div>
-                    <button onclick="checkKnowledge('${key}')" class="w-full bg-slate-900 text-white text-[10px] font-black uppercase py-4 rounded-xl hover:bg-indigo-600">Verify Concept</button>
+                    
+                    <button onclick="toggleClue('${key}')" class="w-full bg-slate-100 text-slate-600 text-[10px] font-black uppercase py-4 rounded-xl hover:bg-indigo-600 hover:text-white transition-all">Get Clue 💡</button>
                 </div>
             `;
             hGrid.innerHTML = Object.entries(TEST_DATA).slice(0, 4).map(([k, v]) => renderCard(k, v)).join('');
             sGrid.innerHTML = Object.entries(TEST_DATA).slice(4).map(([k, v]) => renderCard(k, v)).join('');
         }
 
-        function checkKnowledge(key) {
+        function toggleClue(key) {
+            document.getElementById(`clue-${key}`).classList.toggle('open');
+        }
+
+        function validateConcept(key) {
             const val = (document.getElementById(`def-${key}`).value || "").toLowerCase();
             const data = TEST_DATA[key];
-            const isCorrect = data.keys.some(k => val.includes(k)) && val.length > 15;
-            const nudge = document.getElementById(`nudge-${key}`);
             const status = document.getElementById(`status-${key}`);
+            
+            const matchedKeys = data.keys.filter(k => val.includes(k));
+            const isCorrect = matchedKeys.length >= 3 && val.length > 20;
 
             if (isCorrect) {
-                nudge.classList.remove('open');
+                if (status.innerText !== '✅') addXP(50);
                 status.innerText = '✅';
-                addXP(40);
             } else {
-                nudge.classList.add('open');
                 status.innerText = '⚠️';
             }
-            saveData();
-            checkBadges();
         }
 
         function calcTrend(key) {
@@ -541,19 +535,12 @@
             const testId = document.getElementById(`sel-${key}`).value;
             const test = TEST_DATA[key].tests.find(t => t.id === testId);
             const light = document.getElementById(`tl-${key}`);
-
             const improved = test.type === 'high' ? s2 > s1 : s2 < s1;
             
-            if (s2 === s1) {
-                light.className = 'w-4 h-4 rounded-full mx-auto bg-amber-400';
-            } else if (improved) {
-                light.className = 'w-4 h-4 rounded-full mx-auto bg-emerald-500';
-            } else {
-                light.className = 'w-4 h-4 rounded-full mx-auto bg-rose-500';
-            }
-
+            if (s2 === s1) light.className = 'w-4 h-4 rounded-full mx-auto bg-amber-400';
+            else if (improved) light.className = 'w-4 h-4 rounded-full mx-auto bg-emerald-500';
+            else light.className = 'w-4 h-4 rounded-full mx-auto bg-rose-500';
             updateChart();
-            checkBadges();
         }
 
         function addXP(amt) {
@@ -563,48 +550,9 @@
             document.getElementById('xp-bar-inner').style.width = `${barWidth}%`;
         }
 
-        function unlockBadge(id) {
-            if (!state.badges.includes(id)) {
-                state.badges.push(id);
-                const el = document.getElementById(`badge-${id}`);
-                const mini = document.getElementById(`mini-${id}`);
-                if(el) el.classList.add('unlocked');
-                if(mini) mini.classList.add('unlocked');
-                addXP(100);
-            }
-        }
-
-        function checkBadges() {
-            const checks = Object.keys(TEST_DATA).filter(k => {
-                const el = document.getElementById(`status-${k}`);
-                return el && el.innerText === '✅';
-            });
-            if (checks.length >= 8) unlockBadge('b_knowledge');
-            
-            const trackers = Object.keys(TEST_DATA).filter(k => {
-                const el = document.getElementById(`s1-${k}`);
-                return el && el.value.length > 0;
-            });
-            if (trackers.length >= 8) unlockBadge('b_data');
-
-            const pGoal = document.getElementById('plan-goal');
-            if (pGoal && pGoal.value.length > 20) unlockBadge('b_plan');
-        }
-
-        function renderTrophyRoom() {
-            const grid = document.getElementById('trophy-grid');
-            const mini = document.getElementById('mini-badges');
-            grid.innerHTML = BADGES.map(b => `<div id="badge-${b.id}" class="badge-slot bg-slate-50 p-4 rounded-2xl text-center"><div class="text-2xl">${b.icon}</div><div class="text-[7px] font-black uppercase text-slate-400">${b.name}</div></div>`).join('');
-            mini.innerHTML = BADGES.map(b => `<span id="mini-${b.id}" class="badge-slot opacity-20 text-xs px-1">${b.icon}</span>`).join('');
-        }
-
         function nav(step) {
             document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(`step-${step}`).classList.add('active');
-            document.querySelectorAll('nav button').forEach((b, i) => {
-                b.classList.remove('bg-slate-900', 'text-white', 'scale-110');
-                if (i + 1 === step) b.classList.add('bg-slate-900', 'text-white', 'scale-110');
-            });
             updateMentorTip();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -612,8 +560,10 @@
         function updateMentorTip() {
             if (!state.athlete) return;
             const a = ATHLETES.find(x => x.id === state.athlete);
-            const stepNum = document.querySelector('.step-panel.active').id.split('-')[1];
-            const tip = a.tips[`t${stepNum}`] || "Consistency is the foundation of excellence. Stick to the plan!";
+            const panel = document.querySelector('.step-panel.active');
+            if(!panel) return;
+            const stepNum = panel.id.split('-')[1];
+            const tip = a.tips[`t${stepNum}`] || "Keep grinding. Your results reflect your effort!";
             const tText = document.getElementById('tip-text');
             const tIcon = document.getElementById('tip-icon');
             if(tText) tText.innerText = `"${tip}"`;
@@ -624,16 +574,16 @@
             const summary = document.getElementById('summary-content');
             summary.classList.remove('hidden');
             
-            document.getElementById('sum-name').innerText = document.getElementById('student-name').value || "Junior Athlete";
-            document.getElementById('sum-xp').innerText = `${state.xp} XP Rank`;
+            document.getElementById('sum-name').innerText = document.getElementById('student-name').value || "Athlete";
+            document.getElementById('sum-xp').innerText = `${state.xp} XP`;
             document.getElementById('sum-year-label').innerText = `Year ${state.year} Fitness Portfolio`;
             
             const a = ATHLETES.find(x => x.id === state.athlete) || { emoji: '👤', name: 'No Mentor' };
             document.getElementById('sum-avatar').innerText = a.emoji;
             document.getElementById('sum-mentor').innerText = `Mentored by ${a.name}`;
 
-            document.getElementById('sum-goal').innerText = document.getElementById('plan-goal').value || "No primary goal recorded.";
-            document.getElementById('sum-reflection').innerText = document.getElementById('trend-analysis').value || "No final reflection snippet provided.";
+            document.getElementById('sum-goal').innerText = document.getElementById('plan-goal').value || "No goal recorded.";
+            document.getElementById('sum-reflection').innerText = document.getElementById('future-goals').value || "No reflection provided.";
 
             const improvementsDiv = document.getElementById('sum-improvements');
             improvementsDiv.innerHTML = "";
@@ -642,28 +592,29 @@
                 const s2 = document.getElementById(`s2-${k}`).value;
                 if (s1 && s2) {
                     const improved = document.getElementById(`tl-${k}`).classList.contains('bg-emerald-500');
-                    improvementsDiv.innerHTML += `<div class="bg-slate-50 p-3 rounded-xl flex justify-between border-l-4 ${improved ? 'border-emerald-500' : 'border-slate-300'}"><span class="text-[10px] font-black">${TEST_DATA[k].name}</span><span class="text-[10px] font-bold">${s1} ➔ ${s2}</span></div>`;
+                    if(improved) {
+                        improvementsDiv.innerHTML += `<div class="bg-slate-50 p-4 rounded-xl flex justify-between border-l-4 border-emerald-500 shadow-sm"><span class="text-[10px] font-black">${TEST_DATA[k].name}</span><span class="text-[10px] font-bold">${s1} ➔ ${s2}</span></div>`;
+                    }
                 }
             });
 
             window.scrollTo({ top: summary.offsetTop - 50, behavior: 'smooth' });
-            addXP(100);
         }
 
         function saveData() {
-            document.querySelectorAll('input, textarea, select').forEach(i => { if (i.id) state.inputs[i.id] = i.value; });
-            localStorage.setItem('pe_rec_v3', JSON.stringify(state));
-            checkBadges();
+            document.querySelectorAll('input, textarea, select').forEach(i => { 
+                if (i.id) state.inputs[i.id] = i.value; 
+            });
+            localStorage.setItem('pe_workbook_v11', JSON.stringify(state));
         }
 
         function loadData() {
-            const saved = localStorage.getItem('pe_rec_v3');
+            const saved = localStorage.getItem('pe_workbook_v11');
             if (saved) {
                 const loaded = JSON.parse(saved);
                 state.year = loaded.year || 9;
                 state.athlete = loaded.athlete || null;
                 state.xp = loaded.xp || 0;
-                state.badges = loaded.badges || [];
                 state.inputs = loaded.inputs || {};
 
                 for (const [id, val] of Object.entries(state.inputs)) {
@@ -675,7 +626,28 @@
                 document.getElementById('student-year').value = state.year;
                 updateYearUI();
                 addXP(0);
+                Object.keys(TEST_DATA).forEach(k => validateConcept(k));
             }
+        }
+
+        function exportData() {
+            saveData();
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+            const dl = document.createElement('a');
+            dl.setAttribute("href", dataStr);
+            dl.setAttribute("download", `PE_Recap_${document.getElementById('student-name').value || 'Student'}.json`);
+            dl.click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                localStorage.setItem('pe_workbook_v11', e.target.result);
+                location.reload();
+            };
+            reader.readAsText(file);
         }
 
         function initChart() {
@@ -683,7 +655,7 @@
             fitnessChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: Object.values(TEST_DATA).map(d => d.name),
+                    labels: Object.values(TEST_DATA).map(d => d.name.split(' ')[0]),
                     datasets: [
                         { label: 'Baseline', data: [], backgroundColor: '#e2e8f0', borderRadius: 6 },
                         { label: 'Final', data: [], backgroundColor: '#4f46e5', borderRadius: 6 }
@@ -693,12 +665,10 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: { 
-                        y: { display: false }, 
-                        x: { grid: { display: false }, ticks: { font: { size: 8, weight: 'bold' } } } 
-                    }
+                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 9, weight: 'bold' } } } }
                 }
             });
+            updateChart();
         }
 
         function updateChart() {
