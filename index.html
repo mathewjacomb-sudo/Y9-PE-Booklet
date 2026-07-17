@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waiheke High School | Term 3 PE Mastery Portfolio</title>
+    <title>Waiheke High School | Physical Education & Health Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -23,18 +23,35 @@
                 }
             }
         }
+
+        // Dynamic fallback logic to cascade from logo-stacked.jpg -> Asset 1@2x.png -> input_file_1.png -> Custom CSS Badge
+        function handleImageError(img) {
+            const fallbacks = ['logo-stacked.jpg', 'Asset 1@2x.png', 'input_file_1.png'];
+            let currentIdx = parseInt(img.getAttribute('data-fail-idx') || "-1") + 1;
+            
+            if (currentIdx < fallbacks.length) {
+                img.setAttribute('data-fail-idx', currentIdx);
+                img.src = fallbacks[currentIdx];
+            } else {
+                // If all image files are missing/unresolved, hide the broken image and show the high-contrast WHS badge
+                img.style.display = 'none';
+                const sibling = img.parentNode.querySelector('.whs-logo-fallback');
+                if (sibling) {
+                    sibling.classList.remove('hidden');
+                }
+            }
+        }
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #f0f4f9; /* Increased shading contrast against white cards */
+            background-color: #f0f4f9; 
             color: #0f172a; 
             scroll-behavior: smooth; 
         }
 
-        /* Improved contrast and focus border on white card containers */
         .whs-card {
             background-color: #ffffff;
             border: 2px solid #d1e6f6;
@@ -100,12 +117,23 @@
 </head>
 <body class="pb-32">
 
-    <!-- WHS Header Branding -->
     <header class="no-print bg-white/95 backdrop-blur-md border-b-4 border-whs-dark sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto px-6 py-3 flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center gap-4">
-                <!-- WHS Logo Direct Render -->
-                <img src="input_file_0.png" alt="Waiheke High School Logo" class="h-14 w-auto object-contain hover:scale-105 transition-transform">
+                <div class="relative flex items-center">
+                    <img src="logo-stacked.jpg" alt="Waiheke High School Logo" class="h-14 w-auto object-contain hover:scale-105 transition-transform" onerror="handleImageError(this)">
+                    <!-- Dynamic Fallback Vector Crest Badge (WHS Brand) -->
+                    <div class="whs-logo-fallback hidden flex items-center gap-3">
+                        <div class="relative w-12 h-12 rounded-full bg-[#002066] flex items-center justify-center border-2 border-[#d1e6f6] shadow-sm shrink-0">
+                            <span class="text-white font-black text-xs tracking-tight">WHS</span>
+                            <div class="absolute -bottom-1 bg-[#d1e6f6] text-[#002066] text-[7px] font-black px-1.5 py-0.2 rounded-full uppercase scale-90">EST. 1996</div>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[#002066] text-[12px] font-black tracking-widest leading-none uppercase">Waiheke</span>
+                            <span class="text-[#002066] text-[9px] font-semibold tracking-wider uppercase">High School</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="h-10 w-0.5 bg-whs-light hidden sm:block"></div>
                 <div>
                     <h1 class="text-[11px] font-black tracking-widest uppercase text-whs-dark flex items-center gap-2">
@@ -134,14 +162,20 @@
 
     <main class="max-w-6xl mx-auto px-6 mt-10">
 
-        <!-- STEP 1: IDENTITY & PERSISTENCE -->
         <section id="step-1" class="step-panel active space-y-8">
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white p-6 rounded-3xl border-2 border-whs-light">
                 <div>
                     <h2 class="text-3xl font-black text-whs-dark tracking-tight">Step 01: Profile & <span class="text-whs-gold">Mentor Selection</span></h2>
                     <p class="text-slate-500 font-medium text-sm mt-1">Select your mentor and configure your Year Group class. Year 10 benchmarks reflect age development.</p>
                 </div>
-                <img src="input_file_0.png" alt="WHS Branding" class="h-10 w-auto object-contain hidden md:block">
+                <div class="relative flex items-center shrink-0">
+                    <img src="logo-stacked.jpg" alt="WHS Branding" class="h-12 w-auto object-contain hidden md:block" onerror="handleImageError(this)">
+                    <div class="whs-logo-fallback hidden flex items-center gap-3">
+                        <div class="relative w-10 h-10 rounded-full bg-[#002066] flex items-center justify-center border-2 border-[#d1e6f6] shrink-0">
+                            <span class="text-white font-black text-[10px]">WHS</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="grid lg:grid-cols-3 gap-8">
@@ -216,7 +250,6 @@
             </div>
         </section>
 
-        <!-- STEP 2: PERFORMANCE TRACKER -->
         <section id="step-2" class="step-panel space-y-8">
             <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 bg-white p-6 rounded-3xl border-2 border-whs-light">
                 <div class="max-w-2xl">
@@ -267,38 +300,56 @@
             </div>
         </section>
 
-        <!-- STEP 3: HEALTH LITERACY -->
         <section id="step-3" class="step-panel space-y-8">
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white p-6 rounded-3xl border-2 border-whs-light">
                 <div class="max-w-2xl">
                     <h2 class="text-3xl font-black text-whs-dark tracking-tight">Step 03: Health <span class="text-whs-gold">Literacy</span></h2>
                     <p class="text-slate-500 font-medium text-sm mt-1">Develop academic definitions for core health-related physical structures. Use your Clue sheet to target key scientific concepts.</p>
                 </div>
-                <img src="input_file_0.png" alt="WHS Branding" class="h-10 w-auto object-contain hidden md:block">
+                <div class="relative flex items-center shrink-0">
+                    <img src="logo-stacked.jpg" alt="WHS Branding" class="h-12 w-auto object-contain hidden md:block" onerror="handleImageError(this)">
+                    <div class="whs-logo-fallback hidden flex items-center gap-3">
+                        <div class="relative w-10 h-10 rounded-full bg-[#002066] flex items-center justify-center border-2 border-[#d1e6f6] shrink-0">
+                            <span class="text-white font-black text-[10px]">WHS</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="grid md:grid-cols-2 gap-8" id="health-grid"></div>
         </section>
 
-        <!-- STEP 4: SKILL MATRIX -->
         <section id="step-4" class="step-panel space-y-8">
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white p-6 rounded-3xl border-2 border-whs-light">
                 <div class="max-w-2xl">
                     <h2 class="text-3xl font-black text-whs-dark tracking-tight">Step 04: Skill <span class="text-whs-gold">Matrix</span></h2>
                     <p class="text-slate-500 font-medium text-sm mt-1">Explore physical performance components linked directly to sport efficiency. Synthesize sport-specific context below.</p>
                 </div>
-                <img src="input_file_0.png" alt="WHS Branding" class="h-10 w-auto object-contain hidden md:block">
+                <div class="relative flex items-center shrink-0">
+                    <img src="logo-stacked.jpg" alt="WHS Branding" class="h-12 w-auto object-contain hidden md:block" onerror="handleImageError(this)">
+                    <div class="whs-logo-fallback hidden flex items-center gap-3">
+                        <div class="relative w-10 h-10 rounded-full bg-[#002066] flex items-center justify-center border-2 border-[#d1e6f6] shrink-0">
+                            <span class="text-white font-black text-[10px]">WHS</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="grid md:grid-cols-2 gap-8" id="skill-grid"></div>
         </section>
 
-        <!-- STEP 5: ACTION BLUEPRINT & LOG -->
         <section id="step-5" class="step-panel space-y-8">
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white p-6 rounded-3xl border-2 border-whs-light">
                 <div class="max-w-2xl">
                     <h2 class="text-3xl font-black text-whs-dark tracking-tight">Step 05: Action <span class="text-whs-gold">Blueprint</span></h2>
                     <p class="text-slate-500 font-medium text-sm mt-1">Design an expert physical intervention. Use the SMART planner layout to establish your term target milestones.</p>
                 </div>
-                <img src="input_file_0.png" alt="WHS Branding" class="h-10 w-auto object-contain hidden md:block">
+                <div class="relative flex items-center shrink-0">
+                    <img src="logo-stacked.jpg" alt="WHS Branding" class="h-12 w-auto object-contain hidden md:block" onerror="handleImageError(this)">
+                    <div class="whs-logo-fallback hidden flex items-center gap-3">
+                        <div class="relative w-10 h-10 rounded-full bg-[#002066] flex items-center justify-center border-2 border-[#d1e6f6] shrink-0">
+                            <span class="text-white font-black text-[10px]">WHS</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- SMART Goal Breakdown Panel -->
@@ -337,13 +388,32 @@
                 </div>
 
                 <!-- Interactive SMART Goal Box with Dynamic Examples based on Selected Athlete -->
-                <div class="mt-6 space-y-4">
+                <div class="mt-6 space-y-6">
                     <div class="p-4 bg-whs-accent rounded-2xl border border-whs-light">
                         <h4 class="text-xs font-black text-whs-dark uppercase tracking-wider mb-2">💡 Avatar Goal Example (Based on your chosen mentor)</h4>
                         <p id="smart-avatar-example" class="text-sm font-semibold italic text-whs-dark">Select a mentor on step 1 to view their custom SMART training goal example.</p>
                     </div>
-                    <textarea id="plan-goal" oninput="saveData(); validateSmartGoal()" class="w-full h-32 bg-slate-50 rounded-2xl p-5 text-sm border-2 border-slate-200 outline-none focus:border-whs-dark" placeholder="Compose your SMART goal based on the breakdown above..."></textarea>
-                    <div id="smart-validation-status" class="text-xs font-bold text-slate-400">Word Count: 0 / 20</div>
+                    
+                    <div class="grid lg:grid-cols-3 gap-6">
+                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2">
+                            <label class="text-xs font-black text-whs-dark uppercase tracking-wider block">📐 SMART Goal 1: Primary Performance</label>
+                            <p class="text-[10px] text-slate-500 font-medium">Focus on your main physical standard or target benchmark metric.</p>
+                            <textarea id="plan-goal-1" oninput="saveData(); validateSmartGoal()" class="w-full h-28 bg-white rounded-xl p-3 text-xs border border-slate-200 outline-none focus:border-whs-dark" placeholder="E.g., I will improve my 12-minute run total distance from 1900m to 2150m by Week 7 of Term 3 using continuous interval pacing..."></textarea>
+                            <div id="smart-1-val" class="text-[10px] font-bold text-slate-400">Word Count: 0 / 15</div>
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2">
+                            <label class="text-xs font-black text-whs-dark uppercase tracking-wider block">📐 SMART Goal 2: Supporting Skill</label>
+                            <p class="text-[10px] text-slate-500 font-medium">Focus on reaction time, hand-eye coordination, or agile turns.</p>
+                            <textarea id="plan-goal-2" oninput="saveData(); validateSmartGoal()" class="w-full h-28 bg-white rounded-xl p-3 text-xs border border-slate-200 outline-none focus:border-whs-dark" placeholder="E.g., I will reduce my T-Test Agility baseline time from 12.8s to 11.2s by executing targeted cone shuffles during practical slots..."></textarea>
+                            <div id="smart-2-val" class="text-[10px] font-bold text-slate-400">Word Count: 0 / 15</div>
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2">
+                            <label class="text-xs font-black text-whs-dark uppercase tracking-wider block">📐 SMART Goal 3: Hauora & Consistency</label>
+                            <p class="text-[10px] text-slate-500 font-medium">Focus on work consistency, active engagement, or lesson logging goals.</p>
+                            <textarea id="plan-goal-3" oninput="saveData(); validateSmartGoal()" class="w-full h-28 bg-white rounded-xl p-3 text-xs border border-slate-200 outline-none focus:border-whs-dark" placeholder="E.g., I will maintain active engagement throughout all 3 log sessions and record my heart rate patterns directly..."></textarea>
+                            <div id="smart-3-val" class="text-[10px] font-bold text-slate-400">Word Count: 0 / 15</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -369,11 +439,12 @@
                 </div>
 
                 <!-- Model Example Entry Accordion -->
-                <div class="bg-white/5 rounded-2xl border border-white/10 p-5">
-                    <h4 class="text-xs font-black uppercase tracking-wider text-whs-gold mb-3 flex items-center justify-between">
-                        <span>🏆 MODEL EXCELLENCE ENTRY</span>
+                <div class="bg-white/5 rounded-2xl border border-white/10 p-6 space-y-4">
+                    <h4 class="text-xs font-black uppercase tracking-wider text-whs-gold flex items-center justify-between border-b border-white/10 pb-3">
+                        <span>🏆 MODEL EXCELLENCE ENTRY (DETAILED PLAN & REFLECTION)</span>
                         <span class="bg-whs-gold/20 text-whs-gold px-2.5 py-0.5 rounded text-[9px] font-bold">Standard Exemplar</span>
                     </h4>
+                    
                     <div class="grid md:grid-cols-2 gap-4 text-xs">
                         <div class="space-y-1 bg-white/5 p-3 rounded-lg">
                             <p><strong class="text-whs-light">Session Title:</strong> High-Intensity Shuttle Drill Blast</p>
@@ -382,13 +453,34 @@
                             <p><strong class="text-whs-light">Location:</strong> School Lower Field</p>
                         </div>
                         <div class="space-y-1 bg-white/5 p-3 rounded-lg">
-                            <p><strong class="text-whs-light">Method of Training (MOT):</strong> Interval Training</p>
-                            <p><strong class="text-whs-light">Principle of Training (POT):</strong> Specificity & Intensity</p>
-                            <p><strong class="text-whs-light">Component of Fitness (COF):</strong> Agility & Speed</p>
+                            <p><strong class="text-whs-light">Method of Training (MOT):</strong> Interval Training / Plyometrics</p>
+                            <p><strong class="text-whs-light">Principle of Training (POT):</strong> Specificity & Progressive Overload</p>
+                            <p><strong class="text-whs-light">Component of Fitness (COF):</strong> Agility, Speed & Cardiovascular Endurance</p>
                         </div>
                     </div>
-                    <div class="mt-3 p-3 bg-white/5 rounded-lg text-xs leading-relaxed italic text-slate-200 border-l-2 border-whs-gold">
-                        "Today we ran 20-meter shuttles with 30-second recovery breaks. This was highly specific to netball play because of the constant stop-start transitions. I felt progressive overload during the final three runs as my heart rate was elevated and muscles burned, but I maintained correct foot positioning on turns."
+
+                    <div class="grid md:grid-cols-2 gap-6 text-xs mt-2 pt-2 border-t border-white/5">
+                        <!-- Exemplar Plan -->
+                        <div class="p-4 bg-emerald-950/30 rounded-xl border border-emerald-500/20 space-y-3">
+                            <span class="text-[10px] font-black uppercase text-emerald-400 tracking-wider">📋 Box 1: Session Plan Exemplar</span>
+                            <div class="space-y-2 text-slate-200">
+                                <p><strong>1. WARM UP (10 Mins):</strong> 2 laps dynamic jogging around the netball perimeter to elevate base heart rate. Followed by 10m each of dynamic high-knees, lateral grapevines, and deep stride lunges to recruit glutes/hamstrings. Finished with 3x rapid 15m directional acceleration bursts at 85% effort.</p>
+                                <p><strong>2. MAIN BODY (25 Mins):</strong> High-intensity drills targeting change-of-direction agility standards:
+                                <br>• *Illinois Cone Drill* (3 reps): Max speed run maneuvering through center cones, focusing on low center-of-gravity hip rotations on turns.
+                                <br>• *Stop-Start Shuttle Drill* (4 sets): Sprint 10m, slide-tackle stop, turn, lateral sprint back. Recovery = 45s between sets (to allow full phosphagen system recovery under anaerobic thresholds).</p>
+                                <p><strong>3. COOL DOWN (10 Mins):</strong> 1 lap slow recovery walking across lower field. Static active stretches targeting lower extremities (quadriceps stretch, seated hamstring pull, and calf extension stretching held for 30 seconds each) to reduce localized muscle tightness.</p>
+                            </div>
+                        </div>
+
+                        <!-- Exemplar Reflection -->
+                        <div class="p-4 bg-amber-950/30 rounded-xl border border-amber-500/20 space-y-3">
+                            <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">📈 Box 2: Session Reflection Exemplar</span>
+                            <p class="leading-relaxed text-slate-200">
+                                This training session went highly successfully because the dynamic work-to-rest interval ratios allowed me to perform each agility run at peak explosive output (approx 95% intensity). 
+                                <br><br>
+                                I felt progressive overload starting during set 3 of the Illinois drills, where muscle fatigue set in and lateral control on my pivots became harder to stabilize. Applying the specificity POT, the sharp change-of-direction sprinting mimics actual court transitions (such as cutting inside to dodge defenders) perfectly. Next time, I plan to reduce my recovery intervals from 45s to 35s to challenge physical recovery boundaries even further.
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -421,9 +513,15 @@
                                 <input type="text" id="lp1-pot" oninput="saveData()" placeholder="POT" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Principle of Training">
                                 <input type="text" id="lp1-cof" oninput="saveData()" placeholder="COF" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Component of Fitness">
                             </div>
+                            <!-- Scaffolded Box 1: Plan -->
                             <div>
-                                <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">What did you do? (Detailed reflection)</label>
-                                <textarea id="lp1-reflection" oninput="saveData()" class="w-full h-32 bg-white/5 border border-white/10 rounded-xl p-3 text-xs outline-none focus:border-whs-light" placeholder="Explain how you met the principles..."></textarea>
+                                <label class="text-[9px] font-black text-emerald-400 block uppercase mb-1">📋 Box 1: Session Plan (Warm Up, Main Body, Cool Down)</label>
+                                <textarea id="lp1-planning" oninput="saveData(); checkDiaryLogs()" class="w-full h-36 bg-white/5 border border-emerald-500/30 focus:border-emerald-400 rounded-xl p-3 text-xs outline-none focus:ring-1 focus:ring-emerald-400" placeholder="E.g.,&#10;- WARM UP (10 mins, dynamic drills...)&#10;- MAIN BODY (25 mins, detailed drills, sets, reps...)&#10;- COOL DOWN (10 mins, walks and slow active stretching...)"></textarea>
+                            </div>
+                            <!-- Scaffolded Box 2: Reflection -->
+                            <div>
+                                <label class="text-[9px] font-black text-amber-400 block uppercase mb-1">📈 Box 2: Session Reflection (Succeeded, Failed, POTs applied)</label>
+                                <textarea id="lp1-reflection" oninput="saveData(); checkDiaryLogs()" class="w-full h-36 bg-white/5 border border-amber-500/30 focus:border-amber-400 rounded-xl p-3 text-xs outline-none focus:ring-1 focus:ring-amber-400" placeholder="E.g., How did this session improve your SMART goal? What progressive overload or specificity parameters did you apply? Did you feel muscle fatigue?"></textarea>
                             </div>
                         </div>
                     </div>
@@ -455,9 +553,15 @@
                                 <input type="text" id="lp2-pot" oninput="saveData()" placeholder="POT" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Principle of Training">
                                 <input type="text" id="lp2-cof" oninput="saveData()" placeholder="COF" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Component of Fitness">
                             </div>
+                            <!-- Scaffolded Box 1: Plan -->
                             <div>
-                                <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">What did you do? (Detailed reflection)</label>
-                                <textarea id="lp2-reflection" oninput="saveData()" class="w-full h-32 bg-white/5 border border-white/10 rounded-xl p-3 text-xs outline-none focus:border-whs-light" placeholder="Explain how you met the principles..."></textarea>
+                                <label class="text-[9px] font-black text-emerald-400 block uppercase mb-1">📋 Box 1: Session Plan (Warm Up, Main Body, Cool Down)</label>
+                                <textarea id="lp2-planning" oninput="saveData(); checkDiaryLogs()" class="w-full h-36 bg-white/5 border border-emerald-500/30 focus:border-emerald-400 rounded-xl p-3 text-xs outline-none focus:ring-1 focus:ring-emerald-400" placeholder="E.g.,&#10;- WARM UP (10 mins, dynamic drills...)&#10;- MAIN BODY (25 mins, detailed drills, sets, reps...)&#10;- COOL DOWN (10 mins, walks and slow active stretching...)"></textarea>
+                            </div>
+                            <!-- Scaffolded Box 2: Reflection -->
+                            <div>
+                                <label class="text-[9px] font-black text-amber-400 block uppercase mb-1">📈 Box 2: Session Reflection (Succeeded, Failed, POTs applied)</label>
+                                <textarea id="lp2-reflection" oninput="saveData(); checkDiaryLogs()" class="w-full h-36 bg-white/5 border border-amber-500/30 focus:border-amber-400 rounded-xl p-3 text-xs outline-none focus:ring-1 focus:ring-amber-400" placeholder="E.g., How did this session improve your SMART goal? What progressive overload or specificity parameters did you apply? Did you feel muscle fatigue?"></textarea>
                             </div>
                         </div>
                     </div>
@@ -489,9 +593,15 @@
                                 <input type="text" id="lp3-pot" oninput="saveData()" placeholder="POT" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Principle of Training">
                                 <input type="text" id="lp3-cof" oninput="saveData()" placeholder="COF" class="p-2 bg-white/10 border border-white/20 rounded-lg text-[10px] outline-none" title="Component of Fitness">
                             </div>
+                            <!-- Scaffolded Box 1: Plan -->
                             <div>
-                                <label class="text-[9px] font-bold text-whs-light block uppercase mb-1">What did you do? (Detailed reflection)</label>
-                                <textarea id="lp3-reflection" oninput="saveData()" class="w-full h-32 bg-white/5 border border-white/10 rounded-xl p-3 text-xs outline-none focus:border-whs-light" placeholder="Explain how you met the principles..."></textarea>
+                                <label class="text-[9px] font-black text-emerald-400 block uppercase mb-1">📋 Box 1: Session Plan (Warm Up, Main Body, Cool Down)</label>
+                                <textarea id="lp3-planning" oninput="saveData(); checkDiaryLogs()" class="w-full h-36 bg-white/5 border border-emerald-500/30 focus:border-emerald-400 rounded-xl p-3 text-xs outline-none focus:ring-1 focus:ring-emerald-400" placeholder="E.g.,&#10;- WARM UP (10 mins, dynamic drills...)&#10;- MAIN BODY (25 mins, detailed drills, sets, reps...)&#10;- COOL DOWN (10 mins, walks and slow active stretching...)"></textarea>
+                            </div>
+                            <!-- Scaffolded Box 2: Reflection -->
+                            <div>
+                                <label class="text-[9px] font-black text-amber-400 block uppercase mb-1">📈 Box 2: Session Reflection (Succeeded, Failed, POTs applied)</label>
+                                <textarea id="lp3-reflection" oninput="saveData(); checkDiaryLogs()" class="w-full h-36 bg-white/5 border border-amber-500/30 focus:border-amber-400 rounded-xl p-3 text-xs outline-none focus:ring-1 focus:ring-amber-400" placeholder="E.g., How did this session improve your SMART goal? What progressive overload or specificity parameters did you apply? Did you feel muscle fatigue?"></textarea>
                             </div>
                         </div>
                     </div>
@@ -499,14 +609,20 @@
             </div>
         </section>
 
-        <!-- STEP 6: REFLECTION & GROWTH -->
         <section id="step-6" class="step-panel space-y-8">
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-white p-6 rounded-3xl border-2 border-whs-light">
                 <div class="max-w-2xl">
                     <h2 class="text-3xl font-black text-whs-dark tracking-tight">Step 06: Review & <span class="text-whs-gold">Reflection</span></h2>
                     <p class="text-slate-500 font-medium text-sm mt-1">Reflect on your achievements and barriers. Analyze which specific physical attributes reached higher performance peaks.</p>
                 </div>
-                <img src="input_file_0.png" alt="WHS Branding" class="h-10 w-auto object-contain hidden md:block">
+                <div class="relative flex items-center shrink-0">
+                    <img src="logo-stacked.jpg" alt="WHS Branding" class="h-12 w-auto object-contain hidden md:block" onerror="handleImageError(this)">
+                    <div class="whs-logo-fallback hidden flex items-center gap-3">
+                        <div class="relative w-10 h-10 rounded-full bg-[#002066] flex items-center justify-center border-2 border-[#d1e6f6] shrink-0">
+                            <span class="text-white font-black text-[10px]">WHS</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Quantitative Analysis Columns (Improved, Constant, Declined) -->
@@ -548,10 +664,16 @@
             </div>
         </section>
 
-        <!-- STEP 7: TERM 3 FITNESS RECAP & TURN IN -->
         <section id="step-7" class="step-panel space-y-12">
             <div class="text-center no-print space-y-6">
-                <img src="input_file_0.png" alt="WHS Branding" class="h-20 w-auto object-contain mx-auto">
+                <div class="relative flex items-center justify-center">
+                    <img src="logo-stacked.jpg" alt="WHS Branding" class="h-24 w-auto object-contain mx-auto" onerror="handleImageError(this)">
+                    <div class="whs-logo-fallback hidden flex items-center gap-3">
+                        <div class="relative w-16 h-16 rounded-full bg-[#002066] flex items-center justify-center border-2 border-[#d1e6f6] shrink-0">
+                            <span class="text-white font-black text-lg">WHS</span>
+                        </div>
+                    </div>
+                </div>
                 <h2 class="text-4xl font-black text-whs-dark italic">Term 3 Fitness Recap</h2>
                 <p class="text-slate-500 max-w-xl mx-auto italic text-sm">Review your term outputs and verify entries. Click compiling report below to generate a single-page printable assessment booklet sheet.</p>
                 <button onclick="generateSummary()" class="bg-whs-dark hover:bg-whs-gold text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl hover:scale-105 transition-all text-sm border-2 border-whs-light">Compile Official Report Card ➔</button>
@@ -565,7 +687,14 @@
                 <!-- School and Student Metadata header -->
                 <div class="flex flex-col md:flex-row justify-between items-start border-b-2 border-whs-light pb-8">
                     <div class="space-y-2">
-                        <img src="input_file_0.png" alt="WHS Crest" class="h-16 w-auto object-contain mb-2">
+                        <div class="relative flex items-center">
+                            <img src="logo-stacked.jpg" alt="WHS Crest" class="h-16 w-auto object-contain mb-2" onerror="handleImageError(this)">
+                            <div class="whs-logo-fallback hidden flex items-center gap-2">
+                                <div class="relative w-12 h-12 rounded-full bg-[#002066] flex items-center justify-center border border-[#d1e6f6]">
+                                    <span class="text-white font-black text-xs">WHS</span>
+                                </div>
+                            </div>
+                        </div>
                         <p class="text-[10px] font-black uppercase text-whs-gold tracking-widest">Waiheke High School PE & Health</p>
                         <h3 id="sum-name" class="text-4xl font-black text-whs-dark uppercase">Student Name</h3>
                         <div class="flex gap-3">
@@ -594,8 +723,8 @@
                         <h4 class="text-xs font-black uppercase tracking-widest text-whs-dark border-b pb-2">Training Outcome</h4>
                         <div class="bg-whs-accent p-6 rounded-2xl border border-whs-light space-y-4">
                             <div>
-                                <span class="text-[8px] font-black text-slate-400 uppercase">Interactive SMART Target Plan</span>
-                                <p id="sum-goal" class="text-xs mt-1 italic font-semibold text-whs-dark"></p>
+                                <span class="text-[8px] font-black text-slate-400 uppercase">Interactive SMART Target Plans</span>
+                                <div id="sum-goal" class="text-xs mt-1 space-y-2 text-whs-dark"></div>
                             </div>
                             <div>
                                 <span class="text-[8px] font-black text-slate-400 uppercase">Future PE Targets</span>
@@ -627,7 +756,6 @@
     </nav>
 
     <script>
-        // Expanded sports configurations with detailed properties based on WHS requests
         const ATHLETES = [
             { 
                 id: 'nweke', 
@@ -709,7 +837,6 @@
             }
         ];
 
-        // Testing data options, metrics and age group normative calibrations
         const TEST_DATA = {
             cvf: { name: 'Cardiovascular Endurance', icon: '🫀', keys: ['oxygen', 'heart', 'lungs', 'long', 'aerobic'], example: 'Continuous rowing or long run pacing.', tests: [
                 { id: 'cv1', name: '12 Min Run', unit: 'm', type: 'high', norms: { y9: { m: 2200, f: 1950 }, y10: { m: 2400, f: 2100 } } },
@@ -752,7 +879,6 @@
             ] }
         };
 
-        // Static Achievement configurations
         const TROPHIES = [
             { id: 'profile', name: 'Athlete Core', icon: '🔥', desc: 'Select your mentor and input details.' },
             { id: 'save', name: 'Save Master', icon: '💾', desc: 'Execute a JSON state save.' },
@@ -812,14 +938,12 @@
             document.getElementById('avatar-name').innerText = a.name;
             document.getElementById('avatar-position').innerText = a.position;
             
-            // Render highly comprehensive visual/text specifications
             document.getElementById('avatar-details-box').innerHTML = `
                 <p><strong>Sport Discipline:</strong> ${a.sport}</p>
                 <p><strong>Strengths Profile:</strong> ${a.strengths}</p>
                 <p class="mt-2 text-whs-gold font-black">Scroll to Step 5 to see ${a.name}'s specific SMART goal template!</p>
             `;
 
-            // Update Step 5 Dynamic Example
             document.getElementById('smart-avatar-example').innerText = `"${a.smartExample}"`;
 
             updateMentorTip();
@@ -958,15 +1082,29 @@
         }
 
         function validateSmartGoal() {
-            const val = document.getElementById('plan-goal').value || "";
-            const count = val.split(/\s+/).filter(Boolean).length;
-            const indicator = document.getElementById('smart-validation-status');
-            indicator.innerText = `Word Count: ${count} / 20`;
-            if (count >= 20) {
-                indicator.className = "text-xs font-bold text-emerald-600";
+            const val1 = document.getElementById('plan-goal-1').value || "";
+            const val2 = document.getElementById('plan-goal-2').value || "";
+            const val3 = document.getElementById('plan-goal-3').value || "";
+
+            const count1 = val1.split(/\s+/).filter(Boolean).length;
+            const count2 = val2.split(/\s+/).filter(Boolean).length;
+            const count3 = val3.split(/\s+/).filter(Boolean).length;
+
+            const ind1 = document.getElementById('smart-1-val');
+            const ind2 = document.getElementById('smart-2-val');
+            const ind3 = document.getElementById('smart-3-val');
+
+            ind1.innerText = `Word Count: ${count1} / 15`;
+            ind1.className = count1 >= 15 ? "text-xs font-bold text-emerald-600" : "text-xs font-bold text-slate-400";
+
+            ind2.innerText = `Word Count: ${count2} / 15`;
+            ind2.className = count2 >= 15 ? "text-xs font-bold text-emerald-600" : "text-xs font-bold text-slate-400";
+
+            ind3.innerText = `Word Count: ${count3} / 15`;
+            ind3.className = count3 >= 15 ? "text-xs font-bold text-emerald-600" : "text-xs font-bold text-slate-400";
+
+            if (count1 >= 15 && count2 >= 15 && count3 >= 15) {
                 unlockTrophy('smart');
-            } else {
-                indicator.className = "text-xs font-bold text-slate-400";
             }
         }
 
@@ -987,6 +1125,9 @@
 
         function checkDiaryLogs() {
             const logs = [
+                document.getElementById('lp1-planning').value,
+                document.getElementById('lp2-planning').value,
+                document.getElementById('lp3-planning').value,
                 document.getElementById('lp1-reflection').value,
                 document.getElementById('lp2-reflection').value,
                 document.getElementById('lp3-reflection').value
@@ -1031,7 +1172,6 @@
             document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(`step-${step}`).classList.add('active');
             
-            // Sync top bar active styling
             for (let i = 1; i <= 7; i++) {
                 const btn = document.getElementById(`tb-${i}`);
                 if(btn) {
@@ -1077,7 +1217,16 @@
             document.getElementById('sum-mentor').innerText = `Mentored by ${a.name}`;
             document.getElementById('sum-mentor-pos').innerText = a.position;
 
-            document.getElementById('sum-goal').innerText = document.getElementById('plan-goal').value || "SMART Goal not recorded.";
+            const g1 = document.getElementById('plan-goal-1').value || "Goal 1: Empty";
+            const g2 = document.getElementById('plan-goal-2').value || "Goal 2: Empty";
+            const g3 = document.getElementById('plan-goal-3').value || "Goal 3: Empty";
+            document.getElementById('sum-goal').innerHTML = `
+                <div class="space-y-1 text-xs">
+                    <p><strong>🎯 Primary:</strong> ${g1}</p>
+                    <p><strong>⚡ Skill:</strong> ${g2}</p>
+                    <p><strong>🌿 Hauora:</strong> ${g3}</p>
+                </div>
+            `;
             document.getElementById('sum-reflection').innerText = document.getElementById('future-goals').value || "Future targets not provided.";
 
             const improvementsDiv = document.getElementById('sum-improvements');
